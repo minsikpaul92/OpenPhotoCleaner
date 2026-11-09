@@ -241,7 +241,7 @@ struct SwipeScreen: View {
             .onEnded { value in
                 guard !isAnimating else { return }
                 let distance = hypot(value.translation.width, value.translation.height)
-                if distance >= threshold, let direction = SwipeDirection(translation: value.translation) {
+                if distance >= threshold, let direction = SwipeDirection(swipe: value.translation) {
                     commit(direction, size: size)
                 } else {
                     withAnimation(.spring) { drag = .zero }
@@ -340,7 +340,8 @@ struct SwipeScreen: View {
         // Saving to an album (up) is the most frequent move: a shorter, fading flight feels quicker.
         let isUp = direction == .up
         withAnimation(.easeOut(duration: isUp ? 0.12 : 0.18)) {
-            drag = direction.offscreenOffset(in: size)
+            // The card leaves on the side the finger moved to, the opposite of the hint's side.
+            drag = direction.mirroredHorizontally.offscreenOffset(in: size)
             if isUp { fading = true }
         } completion: {
             apply(direction)

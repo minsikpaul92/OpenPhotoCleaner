@@ -12,6 +12,14 @@ struct SwipeDirectionTests {
         #expect(SwipeDirection(translation: CGSize(width: -10, height: 130)) == .down)
     }
 
+    @Test func touchSwipeMirrorsLeftAndRightOnly() {
+        #expect(SwipeDirection(swipe: CGSize(width: -120, height: 0)) == .right)   // drag left = Keep
+        #expect(SwipeDirection(swipe: CGSize(width: 120, height: 0)) == .left)     // drag right = Delete
+        #expect(SwipeDirection(swipe: CGSize(width: 0, height: -120)) == .up)
+        #expect(SwipeDirection(swipe: CGSize(width: 0, height: 120)) == .down)
+        #expect(SwipeDirection(swipe: .zero) == nil)
+    }
+
     @Test func noMovementHasNoDirection() {
         #expect(SwipeDirection(translation: .zero) == nil)
     }

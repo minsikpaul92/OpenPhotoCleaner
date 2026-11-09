@@ -13,8 +13,8 @@ Everything happens on your device, in your own Photos library; nothing is upload
 
 | Gesture / key | Action |
 |---|---|
-| Swipe left / `←` / `⌫` | Add to the **delete queue** and go to the next photo |
-| Swipe right / `→` / `↩` | Keep and go to the next photo |
+| Swipe **right** / `←` / `⌫` | Add to the **delete queue** and go to the next photo |
+| Swipe **left** / `→` / `↩` | Keep and go to the next photo |
 | Swipe up / `↑` | Save to the target album (asks for one the first time) |
 | Swipe down / `↓` / `Esc` | Back to the photo grid |
 | `1`–`0` (Mac, iPad) | Save to the album you assigned to that number |
@@ -23,7 +23,8 @@ Everything happens on your device, in your own Photos library; nothing is upload
 | `T` (`ㅅ`) | Rotate 90° clockwise |
 | `⌘Z` / shake / ↩ button | Undo (several steps) |
 
-Every key has a touch equivalent (buttons under the photo, tappable chips, context
+Touch swipes push the card away from the action: the hint you reveal on the opposite side
+(Delete on the left, Keep on the right) is the one that runs. Every key has a touch equivalent (buttons under the photo, tappable chips, context
 menus), and every action is in the menu bar on Mac and iPad.
 
 - **Nothing is deleted immediately.** Photos go into a delete queue, hidden from the

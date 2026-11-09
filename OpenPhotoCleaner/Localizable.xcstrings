@@ -891,6 +891,16 @@
           }
         }
       }
+    },
+    "By touch: swipe right to Delete, left to Keep": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "터치: 오른쪽으로 밀면 삭제, 왼쪽으로 밀면 유지"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -14,6 +14,23 @@ enum SwipeDirection: CaseIterable {
         }
     }
 
+    /// The action of a touch swipe. The card is pushed toward one side and the action whose hint sits on the
+    /// opposite (revealed) side runs: drag left = Keep (hint on the right), drag right = Delete (hint on the left).
+    /// Up and down are unchanged. Keys are not affected: ← is still Delete, → is still Keep.
+    init?(swipe translation: CGSize) {
+        guard let moved = SwipeDirection(translation: translation) else { return nil }
+        self = moved.mirroredHorizontally
+    }
+
+    /// Left and right swapped; up and down unchanged.
+    var mirroredHorizontally: SwipeDirection {
+        switch self {
+        case .left: .right
+        case .right: .left
+        case .up, .down: self
+        }
+    }
+
     /// Up is "Add to <album>" with a target album, otherwise "Choose Album".
     func label(target: Album?) -> String {
         switch self {
@@ -95,7 +112,7 @@ struct SwipeHintOverlay: View {
     }
 
     private func opacity(for direction: SwipeDirection) -> Double {
-        guard SwipeDirection(translation: drag) == direction else { return 0 }
+        guard SwipeDirection(swipe: drag) == direction else { return 0 }
         return min(Double(hypot(drag.width, drag.height) / threshold), 1)
     }
 }

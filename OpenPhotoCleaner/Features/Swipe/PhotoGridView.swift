@@ -40,6 +40,16 @@ struct PhotoGridView: View {
                     Button("Delete Queue (\(session.queue.count))") { showQueue = true }
                         .disabled(session.queue.count == 0)
                 }
+                #if os(iOS)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        NotificationCenter.default.post(name: .showTutorial, object: nil)
+                    } label: {
+                        Image(systemName: "questionmark.circle")
+                    }
+                    .accessibilityLabel("How to Sort Photos")
+                }
+                #endif
             }
         }
         .sheet(isPresented: $showQueue) { QueueSheet(session: session) }

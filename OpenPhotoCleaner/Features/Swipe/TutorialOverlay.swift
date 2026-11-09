@@ -24,6 +24,9 @@ struct TutorialOverlay: View {
                 extra("A", "Open the album picker")
                 extra("Esc", "Back to the grid")
                 extra("⌘ Z", "Undo the last action")
+                #if os(iOS)
+                extra("↔", "By touch: swipe right to Delete, left to Keep")
+                #endif
                 }
                 #if os(iOS)
                 if UIDevice.current.userInterfaceIdiom != .pad {
@@ -74,8 +77,9 @@ struct TutorialOverlay: View {
         }
     }
 
+    /// Touch devices swipe the other way (drag right = Delete), so iPhone shows the swipe arrow, not the key arrow.
     private func arrow(_ direction: SwipeDirection) -> String {
-        switch direction {
+        switch Platform.desktopStyle ? direction : direction.mirroredHorizontally {
         case .left: "arrow.left"
         case .right: "arrow.right"
         case .up: "arrow.up"
