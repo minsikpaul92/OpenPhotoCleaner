@@ -234,6 +234,11 @@ struct SwipeScreen: View {
     private func handleUp() {
         if let last = lastUpSave, Date.now.timeIntervalSince(last) < doubleUpWindow {
             lastUpSave = nil
+            // The save is still waiting (keyboard saves are delayed past the double-press window): just drop it.
+            if session.cancelDeferredAdd() {
+                albumPicker = .changeTarget
+                return
+            }
             Task {
                 // Let the first save finish (it is recorded when its animation ends), then take it back.
                 while isAnimating { try? await Task.sleep(for: .milliseconds(20)) }
@@ -319,10 +324,10 @@ struct SwipeScreen: View {
             }
             leaving = LeavingCard(image: image, end: end)
         }
-        apply(direction)
+        apply(direction, keyboard: true)
     }
 
-    private func apply(_ direction: SwipeDirection) {
+    private func apply(_ direction: SwipeDirection, keyboard: Bool = false) {
         switch direction {
         case .left:
             session.trash()
@@ -330,7 +335,8 @@ struct SwipeScreen: View {
             session.keep()
         case .up:
             if let target = session.target {
-                session.addCurrent(to: target)
+                // Keyboard saves wait a moment so a quick second ↑ (open the picker) can cancel them.
+                session.addCurrent(to: target, deferredBy: keyboard ? .milliseconds(450) : nil)
             } else {
                 albumPicker = .addCurrent
             }
