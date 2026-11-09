@@ -81,8 +81,8 @@ struct AlbumPickerSheet: View {
             #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
-            #if !os(macOS)
             .toolbar {
+                if !Platform.desktopStyle {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }
                 }
@@ -94,11 +94,10 @@ struct AlbumPickerSheet: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button("New Album", systemImage: "plus") { showNewAlbum = true }
                 }
+                }
             }
-            #else
-            // The toolbar is not visible in Mac sheets, so draw a bottom button bar ourselves.
-            .safeAreaInset(edge: .bottom) { macBar }
-            #endif
+            // The toolbar is not visible in Mac sheets, and keyboard users on iPad want the same keys: draw a bottom bar ourselves.
+            .safeAreaInset(edge: .bottom) { if Platform.desktopStyle { macBar } }
             .alert("New Album", isPresented: $showNewAlbum) {
                 TextField("Album name", text: $newAlbumTitle)
                 Button("Create") { createAlbum() }
@@ -117,8 +116,7 @@ struct AlbumPickerSheet: View {
         .onChange(of: showNewAlbum) { focused = true }
     }
 
-    #if os(macOS)
-    /// Bottom button bar for Mac: key legend plus sort, delete album, new album and close buttons.
+    /// Bottom button bar for Mac and iPad: key legend plus sort, delete album, new album and close buttons.
     private var macBar: some View {
         VStack(spacing: 8) {
             Text("← → ↑ ↓ Move  ·  Enter Select  ·  1–0 Number  ·  + New Album  ·  ⌫ Delete  ·  S Sort  ·  Esc Close")
@@ -138,7 +136,6 @@ struct AlbumPickerSheet: View {
         .padding(12)
         .background(.bar)
     }
-    #endif
 
     private func tile(_ album: Album) -> some View {
         let isTarget = album.id == session.target?.id

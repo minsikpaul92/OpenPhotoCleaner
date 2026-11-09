@@ -19,23 +19,18 @@ struct SwipeScreen: View {
     @State private var cardSize = CGSize(width: 600, height: 800)
     @State private var toast: String?
     @FocusState private var focused: Bool
+    @Environment(\.colorScheme) private var colorScheme
 
     private let threshold: CGFloat = 100
 
     var body: some View {
         VStack(spacing: 0) {
             card
-            #if os(macOS)
-            favoritesLegend
-            #endif
+            if Platform.desktopStyle { favoritesLegend }
             controls
         }
-        #if os(macOS)
-        .environment(\.colorScheme, .dark)
-        .background(Color.black)
-        #else
-        .background(.background)
-        #endif
+        .environment(\.colorScheme, Platform.desktopStyle ? .dark : colorScheme)
+        .background(Platform.desktopStyle ? Color.black : Color.platformBackground)
         .overlay(alignment: .top) { toastView }
         .onReceive(NotificationCenter.default.publisher(for: .undoRequested)) { _ in performUndo() }
         .focusable()
@@ -105,12 +100,12 @@ struct SwipeScreen: View {
                         }
                         .id(leaving.id)
                     }
-                    #if os(macOS)
-                    EdgeHints(
-                        container: proxy.size,
-                        imageAspect: CGFloat(asset.pixelWidth) / CGFloat(max(asset.pixelHeight, 1))
-                    )
-                    #endif
+                    if Platform.desktopStyle {
+                        EdgeHints(
+                            container: proxy.size,
+                            imageAspect: CGFloat(asset.pixelWidth) / CGFloat(max(asset.pixelHeight, 1))
+                        )
+                    }
                     SwipeHintOverlay(drag: drag, threshold: threshold, target: session.target)
                         .onChange(of: proxy.size, initial: true) { cardSize = proxy.size }
                     targetChip
@@ -148,7 +143,6 @@ struct SwipeScreen: View {
         }
     }
 
-    #if os(macOS)
     /// List of numbered albums. Pressing the number key saves straight to that album.
     private var favoritesLegend: some View {
         let entries = AlbumLibrary.slotKeys.compactMap { digit in
@@ -174,7 +168,6 @@ struct SwipeScreen: View {
         }
         .frame(height: 34)
     }
-    #endif
 
     @ViewBuilder
     private var toastView: some View {

@@ -18,13 +18,9 @@ struct QueueSheet: View {
 
     private let tileSize: CGFloat = 100
 
-    /// Whether selection mode is on. On Mac it turns on automatically as soon as one photo is selected.
+    /// Whether selection mode is on. On Mac and iPad it turns on automatically as soon as one photo is selected.
     private var isSelecting: Bool {
-        #if os(macOS)
-        selecting || !selected.isEmpty
-        #else
-        selecting
-        #endif
+        Platform.desktopStyle ? (selecting || !selected.isEmpty) : selecting
     }
 
     /// Target of delete/restore: the selected photos in selection mode, otherwise all.
@@ -154,11 +150,7 @@ struct QueueSheet: View {
             .onTapGesture {
                 focusedID = id
                 focused = true
-                #if os(macOS)
-                toggle(id)
-                #else
-                if selecting { toggle(id) }
-                #endif
+                if Platform.desktopStyle || selecting { toggle(id) }
             }
     }
 

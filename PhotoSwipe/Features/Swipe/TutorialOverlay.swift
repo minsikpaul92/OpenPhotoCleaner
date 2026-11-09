@@ -17,16 +17,19 @@ struct TutorialOverlay: View {
                 row(.right, "Keep", "Leave it as is and go to the next photo")
                 row(.up, "Save to Album", "Saves to the target album right away (asks for one if none is set)")
                 row(.down, "Show Grid", "Return to the photo grid")
-                #if os(macOS)
+                if Platform.desktopStyle {
                 Divider()
                 extra("1 ~ 0", "Save to the album with that number")
                 extra("⌫ / ↩", "Delete / Keep, same as ← / →")
                 extra("A", "Open the album picker")
                 extra("Esc", "Back to the grid")
                 extra("⌘ Z", "Undo the last action")
-                #else
-                Divider()
-                extra("Shake", "Undo the last action")
+                }
+                #if os(iOS)
+                if UIDevice.current.userInterfaceIdiom != .pad {
+                    Divider()
+                    extra("Shake", "Undo the last action")
+                }
                 #endif
                 Button("Get Started", action: onDismiss)
                     .buttonStyle(.borderedProminent)

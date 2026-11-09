@@ -31,6 +31,7 @@ your device, in your own Photos library; nothing is uploaded.
 - Mac extras: number keys `1`–`0` file the photo into the album you assigned to
   that number, `A` opens the album picker, `Esc` goes back to the grid, and the
   album picker and queue are fully keyboard driven.
+- iPad uses the Mac-style layout and keyboard shortcuts (with a hardware keyboard).
 - English and Korean. Change the language in the system settings for the app.
 
 ## Build
