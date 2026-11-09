@@ -19,6 +19,7 @@ struct SwipeScreen: View {
     @State private var cardSize = CGSize(width: 600, height: 800)
     @State private var toast: String?
     @FocusState private var focused: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var colorScheme
 
     private let threshold: CGFloat = 100
@@ -41,6 +42,8 @@ struct SwipeScreen: View {
             prefetch()
         }
         .onDisappear { PhotoLoader.shared.stop() }
+        .sensoryFeedback(.impact(weight: .light), trigger: session.index)
+        .onReceive(NotificationCenter.default.publisher(for: .cardCommand)) { handleCommand($0.object as? String) }
         .onChange(of: session.index) { prefetch() }
         .onChange(of: session.items.count) { prefetch() }
         .onKeyPress(.leftArrow) { perform(.left); return .handled }
@@ -57,6 +60,9 @@ struct SwipeScreen: View {
         .onPhysicalKey(PhysicalKeyCode.a, enabled: albumPicker == nil && !isBlocked) { albumPicker = .changeTarget }
         #endif
         .onKeyPress(.downArrow) { perform(.down); return .handled }
+        // Space = Favorite, T = Turn (rotate 90°). Buttons in the bottom row do the same by touch.
+        .onKeyPress(.space, phases: .down) { _ in toggleFavorite(); return .handled }
+        .onKeyPress(characters: .rotateKey, phases: .down) { _ in rotate(); return .handled }
         .onKeyPress(.escape) { requestClose(); return .handled }
         // Delete = same as ← (delete queue), Return = same as → (keep).
         .onDeleteKey { perform(.left) }
@@ -110,6 +116,13 @@ struct SwipeScreen: View {
                         .onChange(of: proxy.size, initial: true) { cardSize = proxy.size }
                     targetChip
                 }
+                // Swipes have no VoiceOver equivalent, so expose the moves as accessibility actions.
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(String(localized: "Photo \(session.index + 1) of \(session.count)"))
+                .accessibilityAction(named: Text(SwipeDirection.left.label(target: session.target))) { perform(.left) }
+                .accessibilityAction(named: Text(SwipeDirection.right.label(target: session.target))) { perform(.right) }
+                .accessibilityAction(named: Text(SwipeDirection.up.label(target: session.target))) { perform(.up) }
+                .accessibilityAction(named: Text("Back to Grid")) { requestClose() }
             } else {
                 ContentUnavailableView {
                     Label("All Reviewed", systemImage: "checkmark.circle")
@@ -159,7 +172,7 @@ struct SwipeScreen: View {
                             HStack(spacing: 6) {
                                 Text(entry.digit)
                                     .font(.caption.weight(.bold).monospacedDigit())
-                                    .frame(width: 18, height: 18)
+                                    .frame(minWidth: 18, minHeight: 18)
                                     .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
                                 Text(entry.title).lineLimit(1)
                             }
@@ -173,7 +186,7 @@ struct SwipeScreen: View {
                 .font(.footnote)
                 .padding(.horizontal, 16)
             }
-            .frame(height: 34)
+            .frame(minHeight: 34)
         }
     }
 
@@ -198,21 +211,24 @@ struct SwipeScreen: View {
     // Temporary previous button. To be replaced by undo.
     private var controls: some View {
         HStack {
-            Button { session.previous() } label: { Image(systemName: "chevron.left") }
-                .disabled(!session.canGoBack)
+            // Every icon button has a 44 pt hit region and a VoiceOver label.
+            iconButton("chevron.left", "Previous Photo", enabled: session.canGoBack) { session.previous() }
             // Touch equivalent of Cmd+Z / shake.
-            Button { performUndo() } label: { Image(systemName: "arrow.uturn.backward") }
-                .accessibilityLabel("Undo")
-                .padding(.leading, 12)
+            iconButton("arrow.uturn.backward", "Undo") { performUndo() }
             Spacer()
             Text("\(min(session.index + 1, session.count)) / \(session.count)")
                 .font(.footnote.monospacedDigit())
             Spacer()
+            iconButton("rotate.right", "Rotate", enabled: session.current != nil) { rotate() }
+            iconButton(session.current?.isFavorite == true ? "heart.fill" : "heart", "Favorite", enabled: session.current != nil) { toggleFavorite() }
             Label("\(session.queue.count)", systemImage: "trash")
                 .font(.footnote.monospacedDigit())
                 .foregroundStyle(.secondary)
+                .accessibilityLabel(String(localized: "Delete Queue (\(session.queue.count))"))
+                .padding(.leading, 8)
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.vertical, 4)
     }
 
     private func dragGesture(size: CGSize) -> some Gesture {
@@ -255,6 +271,40 @@ struct SwipeScreen: View {
     }
 
     /// Undo from ⌘Z (Mac menu) or a shake (iPhone). Ignored while a sheet or animation is up.
+    private func iconButton(_ symbol: String, _ label: LocalizedStringKey, enabled: Bool = true, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol).frame(minWidth: 44, minHeight: 44)
+        }
+        .disabled(!enabled)
+        .accessibilityLabel(label)
+    }
+
+    private func toggleFavorite() {
+        Task {
+            guard let on = await session.toggleFavorite() else { return }
+            showToast(on ? String(localized: "Added to Favorites") : String(localized: "Removed from Favorites"))
+        }
+    }
+
+    private func rotate() {
+        Task { if await session.rotateCurrent() { showToast(String(localized: "Rotated")) } }
+    }
+
+    /// Menu-bar commands (Mac and iPad). They do what the matching keys and gestures do.
+    private func handleCommand(_ name: String?) {
+        guard albumPicker == nil, !isBlocked else { return }
+        switch name {
+        case "delete": perform(.left)
+        case "keep": perform(.right)
+        case "save": perform(.up)
+        case "albums": albumPicker = .changeTarget
+        case "grid": requestClose()
+        case "rotate": rotate()
+        case "favorite": toggleFavorite()
+        default: break
+        }
+    }
+
     private func performUndo() {
         guard albumPicker == nil, !isAnimating else { return }
         Task { showToast(await session.undo() ?? String(localized: "Nothing to undo")) }
@@ -274,6 +324,12 @@ struct SwipeScreen: View {
         guard direction.advances(hasTarget: session.target != nil) else {
             apply(direction)
             withAnimation(.spring) { drag = .zero }
+            return
+        }
+        if reduceMotion {
+            // Reduce Motion: switch photos with no flight.
+            apply(direction)
+            drag = .zero
             return
         }
         if keyboard {
@@ -349,6 +405,10 @@ struct SwipeScreen: View {
 }
 
 extension Notification.Name {
+    /// Posted by the "Photo" menu; `object` is the command name (see `handleCommand`).
+    static let cardCommand = Notification.Name("cardCommand")
+    /// Posted by Help > How to Sort Photos.
+    static let showTutorial = Notification.Name("showTutorial")
     /// Posted by the Mac Undo menu command (⌘Z) and by a shake on iPhone; the card view performs the undo.
     static let undoRequested = Notification.Name("undoRequested")
 }

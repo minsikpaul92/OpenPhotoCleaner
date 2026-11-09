@@ -452,16 +452,6 @@
         }
       }
     },
-    "Notice": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "알림"
-          }
-        }
-      }
-    },
     "OK": {
       "localizations": {
         "ko": {
@@ -738,6 +728,166 @@
           "stringUnit": {
             "state": "translated",
             "value": "번호 해제"
+          }
+        }
+      }
+    },
+    "Couldn't Finish": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완료하지 못했습니다"
+          }
+        }
+      }
+    },
+    "Rotate": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회전"
+          }
+        }
+      }
+    },
+    "Favorite": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즐겨찾기"
+          }
+        }
+      }
+    },
+    "Added to Favorites": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즐겨찾기에 추가했습니다"
+          }
+        }
+      }
+    },
+    "Removed from Favorites": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즐겨찾기에서 뺐습니다"
+          }
+        }
+      }
+    },
+    "Rotated": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회전했습니다"
+          }
+        }
+      }
+    },
+    "Undid favorite": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즐겨찾기를 취소했습니다"
+          }
+        }
+      }
+    },
+    "Undid rotate": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회전을 취소했습니다"
+          }
+        }
+      }
+    },
+    "Only still photos can be rotated.": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일반 사진만 회전할 수 있습니다."
+          }
+        }
+      }
+    },
+    "The photo could not be read.": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진을 읽을 수 없습니다."
+          }
+        }
+      }
+    },
+    "Couldn't rotate. %@": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회전하지 못했습니다. %@"
+          }
+        }
+      }
+    },
+    "Couldn't change the favorite. %@": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즐겨찾기를 바꾸지 못했습니다. %@"
+          }
+        }
+      }
+    },
+    "Photo %lld of %lld": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진 %lld / %lld"
+          }
+        }
+      }
+    },
+    "Remove from %@": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@에서 빼기"
+          }
+        }
+      }
+    },
+    "Photo": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진"
+          }
+        }
+      }
+    },
+    "Rotate Clockwise": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시계 방향으로 회전"
           }
         }
       }

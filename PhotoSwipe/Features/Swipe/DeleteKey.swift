@@ -19,6 +19,8 @@ extension CharacterSet {
     // shortcut: other non-Latin layouts are not covered on iOS.
     /// A (Album): opens the album picker.
     static let albumKey = CharacterSet(charactersIn: "aAㅁ\u{1106}")
+    /// T (Turn): rotates the photo 90°.
+    static let rotateKey = CharacterSet(charactersIn: "tTㅅ\u{1109}")
     /// S (Sort): toggles the album order.
     static let sortKey = CharacterSet(charactersIn: "sSㄴ\u{1102}")
 }

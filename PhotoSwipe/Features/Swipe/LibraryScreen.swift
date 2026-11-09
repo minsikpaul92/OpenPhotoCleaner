@@ -33,8 +33,9 @@ struct LibraryScreen: View {
                     .zIndex(2)
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .showTutorial)) { _ in tutorialSeen = false }
         .onChange(of: showCard) { UserDefaults.standard.set(showCard, forKey: "ui.cardOpen") }
-        .alert("Notice", isPresented: Binding(get: { session.lastError != nil }, set: { if !$0 { session.lastError = nil } })) {
+        .alert("Couldn't Finish", isPresented: Binding(get: { session.lastError != nil }, set: { if !$0 { session.lastError = nil } })) {
             Button("OK") {}
         } message: {
             Text(session.lastError ?? "")

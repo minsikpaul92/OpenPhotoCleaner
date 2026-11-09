@@ -55,6 +55,8 @@ final class SwipeSession {
         case trashed(PHAsset)
         case addedToAlbum(PHAsset, Album, wasMember: Membership)
         case removedFromAlbum(PHAsset, Album)
+        case favoriteToggled(PHAsset)
+        case rotated(PHAsset, clockwise: Bool)
     }
 
     /// Whether the photo was already in the album before an add. Filled in by the background add so the UI thread never waits on PhotoKit.
@@ -97,6 +99,21 @@ final class SwipeSession {
                     lastError = String(localized: "Couldn't remove from \(album.title). \(error.localizedDescription)")
                 }
                 return String(localized: "Removed from \(album.title)")
+            case .favoriteToggled(let asset):
+                show(asset)
+                if let fresh = freshAsset(asset) { await setFavorite(!fresh.isFavorite, for: fresh) }
+                return String(localized: "Undid favorite")
+            case .rotated(let asset, let clockwise):
+                show(asset)
+                if let fresh = freshAsset(asset) {
+                    do {
+                        try await PhotoRotator.rotate(fresh, clockwise: !clockwise)
+                        refresh(asset)
+                    } catch {
+                        lastError = String(localized: "Couldn't rotate. \(error.localizedDescription)")
+                    }
+                }
+                return String(localized: "Undid rotate")
             case .removedFromAlbum(let asset, let album):
                 show(asset)
                 await add(asset, to: album)
@@ -104,6 +121,55 @@ final class SwipeSession {
             }
         }
         return nil
+    }
+
+    /// The same photo fetched again, so it reflects the latest favorite/edit state.
+    private func freshAsset(_ asset: PHAsset) -> PHAsset? {
+        PHAsset.fetchAssets(withLocalIdentifiers: [asset.localIdentifier], options: nil).firstObject
+    }
+
+    /// Replaces the stored snapshot of `asset` with a fresh one and drops its cached images.
+    private func refresh(_ asset: PHAsset) {
+        guard let fresh = freshAsset(asset),
+              let i = items.firstIndex(where: { $0.localIdentifier == asset.localIdentifier }) else { return }
+        PhotoLoader.shared.invalidate(asset)
+        items[i] = fresh
+    }
+
+    private func setFavorite(_ value: Bool, for asset: PHAsset) async {
+        do {
+            try await PHPhotoLibrary.shared().performChanges {
+                PHAssetChangeRequest(for: asset).isFavorite = value
+            }
+            refresh(asset)
+        } catch {
+            lastError = String(localized: "Couldn't change the favorite. \(error.localizedDescription)")
+        }
+    }
+
+    /// Toggles Favorite on the current photo. Returns the new state, or nil if nothing changed.
+    func toggleFavorite() async -> Bool? {
+        guard let asset = current else { return nil }
+        let newValue = !asset.isFavorite
+        await setFavorite(newValue, for: asset)
+        guard freshAsset(asset)?.isFavorite == newValue else { return nil }
+        record(.favoriteToggled(asset))
+        return newValue
+    }
+
+    /// Rotates the current photo 90° clockwise as a Photos edit. Returns true on success.
+    func rotateCurrent() async -> Bool {
+        guard let asset = current else { return false }
+        do {
+            try await PhotoRotator.rotate(asset, clockwise: true)
+            record(.rotated(asset, clockwise: true))
+            refresh(asset)
+            return true
+        } catch {
+            lastError = (error as? RotateError)?.errorDescription
+                ?? String(localized: "Couldn't rotate. \(error.localizedDescription)")
+            return false
+        }
     }
 
     /// Moves to `asset` if it is in the list. Returns false when it is gone (e.g. deleted).

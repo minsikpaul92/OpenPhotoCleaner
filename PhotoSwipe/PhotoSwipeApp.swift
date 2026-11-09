@@ -25,6 +25,20 @@ final class ShakeAppDelegate: UIResponder, UIApplicationDelegate {
         }
         .commands {
             // Own the Undo shortcut (⌘Z); the card view listens for it. iPhone uses shake instead.
+            CommandMenu("Photo") {
+                Button("Delete") { NotificationCenter.default.post(name: .cardCommand, object: "delete") }
+                Button("Keep") { NotificationCenter.default.post(name: .cardCommand, object: "keep") }
+                Button("Save to Album") { NotificationCenter.default.post(name: .cardCommand, object: "save") }
+                Button("Choose Album") { NotificationCenter.default.post(name: .cardCommand, object: "albums") }
+                Divider()
+                Button("Rotate Clockwise") { NotificationCenter.default.post(name: .cardCommand, object: "rotate") }
+                Button("Favorite") { NotificationCenter.default.post(name: .cardCommand, object: "favorite") }
+                Divider()
+                Button("Back to Grid") { NotificationCenter.default.post(name: .cardCommand, object: "grid") }
+            }
+            CommandGroup(replacing: .help) {
+                Button("How to Sort Photos") { NotificationCenter.default.post(name: .showTutorial, object: nil) }
+            }
             CommandGroup(replacing: .undoRedo) {
                 Button("Undo") { NotificationCenter.default.post(name: .undoRequested, object: nil) }
                     .keyboardShortcut("z")

@@ -33,10 +33,11 @@ struct AlbumBadges: View {
                     }
                     .font(.caption.weight(.medium))
                     .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .padding(.vertical, 8)
                     .background(.thinMaterial, in: Capsule())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(String(localized: "Remove from \(album.title)"))
             }
             if albums.count > maxShown {
                 Text("+\(albums.count - maxShown)")

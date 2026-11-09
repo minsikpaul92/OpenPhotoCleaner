@@ -66,7 +66,7 @@ final class PhotoLoader {
 
     /// Returns the image right away if it was prefetched (nil otherwise).
     func cachedImage(for asset: PHAsset) -> Image? {
-        images[asset.localIdentifier].map { Image(platform: $0) }
+        images[asset.cacheKey].map { Image(platform: $0) }
     }
 
     /// Prefetches around `index`, nearest photos first, and drops anything outside the window.
@@ -78,7 +78,7 @@ final class PhotoLoader {
             return
         }
         let window = Array(items[lower...upper])
-        let windowIDs = Set(window.map(\.localIdentifier))
+        let windowIDs = Set(window.map(\.cacheKey))
 
         for (id, requestID) in inFlight where !windowIDs.contains(id) {
             manager.cancelImageRequest(requestID)
@@ -89,7 +89,7 @@ final class PhotoLoader {
         let center = index - lower
         let nearestFirst = window.enumerated().sorted { abs($0.offset - center) < abs($1.offset - center) }
         for (_, asset) in nearestFirst {
-            let id = asset.localIdentifier
+            let id = asset.cacheKey
             guard images[id] == nil, inFlight[id] == nil else { continue }
             inFlight[id] = manager.requestImage(for: asset, targetSize: Self.largeSize, contentMode: .aspectFit, options: Self.largeOptions) { [weak self] platformImage, _ in
                 guard let self else { return }
@@ -97,6 +97,11 @@ final class PhotoLoader {
                 if let platformImage { self.images[id] = platformImage }
             }
         }
+    }
+
+    /// Forgets the cached images of one photo (after it was edited).
+    func invalidate(_ asset: PHAsset) {
+        images = images.filter { !$0.key.hasPrefix(asset.localIdentifier + "|") }
     }
 
     /// Drops everything prefetched (when the one-photo window closes).
@@ -122,7 +127,7 @@ struct LargeAssetImage: View {
 
     /// Image of the current photo. Never shows the previous photo's image.
     private var shown: Image? {
-        if let loaded, loaded.id == asset.localIdentifier { return loaded.image }
+        if let loaded, loaded.id == asset.cacheKey { return loaded.image }
         return PhotoLoader.shared.cachedImage(for: asset)
     }
 
@@ -133,13 +138,13 @@ struct LargeAssetImage: View {
             }
         }
         .onAppear(perform: load)
-        .onChange(of: asset.localIdentifier) { load() }
+        .onChange(of: asset.cacheKey) { load() }
         .onDisappear(perform: cancel)
     }
 
     private func load() {
         cancel()
-        let id = asset.localIdentifier
+        let id = asset.cacheKey
         currentID = id
         guard loaded?.id != id, PhotoLoader.shared.cachedImage(for: asset) == nil else { return }
         requestID = PhotoLoader.shared.manager.requestImage(for: asset, targetSize: PhotoLoader.largeSize, contentMode: .aspectFit, options: PhotoLoader.largeOptions) { platformImage, _ in

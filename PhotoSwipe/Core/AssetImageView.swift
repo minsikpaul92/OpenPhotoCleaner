@@ -17,7 +17,7 @@ struct AssetImageView: View {
             }
         }
         .onAppear(perform: load)
-        .onChange(of: asset.localIdentifier) { load() }
+        .onChange(of: asset.cacheKey) { load() }
         .onDisappear(perform: cancel)
     }
 
