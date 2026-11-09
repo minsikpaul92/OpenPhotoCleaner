@@ -14,13 +14,15 @@ struct SwipeScreen: View {
     @State private var fading = false
     @State private var albumPicker: AlbumPickerMode?
     @State private var isClosing = false
-    @State private var pendingUp: Task<Void, Never>?
+    /// When the last ↑ key saved to the target album; a second ↑ soon after turns it into "open the picker".
+    @State private var lastUpSave: Date?
+    @State private var cardSize = CGSize(width: 600, height: 800)
     @State private var toast: String?
     @FocusState private var focused: Bool
 
     private let threshold: CGFloat = 100
-    /// How long a single ↑ waits to tell whether a second ↑ follows.
-    private let doubleUpWindow: Duration = .milliseconds(300)
+    /// A second ↑ within this many seconds of a save counts as ↑↑ (open the album picker).
+    private let doubleUpWindow: TimeInterval = 0.4
 
     var body: some View {
         VStack(spacing: 0) {
@@ -96,6 +98,7 @@ struct SwipeScreen: View {
                     )
                     #endif
                     SwipeHintOverlay(drag: drag, threshold: threshold, target: session.target)
+                        .onChange(of: proxy.size, initial: true) { cardSize = proxy.size }
                     targetChip
                 }
             } else {
@@ -215,28 +218,25 @@ struct SwipeScreen: View {
     /// For arrow keys. Uses a rough screen size to know how far the card flies off.
     private func perform(_ direction: SwipeDirection) {
         guard !isAnimating else { return }
-        commit(direction, size: CGSize(width: 600, height: 800))
+        commit(direction, size: cardSize, keyboard: true)
     }
 
-    /// ↑ key. Without a target album, open the picker right away. With one, wait briefly: a second ↑ opens the picker, otherwise add to the target.
+    /// ↑ key. Without a target album, open the picker. With one, save right away with no waiting; a second ↑ shortly
+    /// after takes that save back and opens the picker instead, so ↑↑ still opens it.
     private func handleUp() {
+        if let last = lastUpSave, Date.now.timeIntervalSince(last) < doubleUpWindow {
+            lastUpSave = nil
+            Task {
+                // Let the first save finish (it is recorded when its animation ends), then take it back.
+                while isAnimating { try? await Task.sleep(for: .milliseconds(20)) }
+                _ = await session.undo()
+                albumPicker = .changeTarget
+            }
+            return
+        }
         guard !isAnimating else { return }
-        if let waiting = pendingUp {
-            waiting.cancel()
-            pendingUp = nil
-            albumPicker = .changeTarget
-            return
-        }
-        guard session.target != nil else {
-            perform(.up)
-            return
-        }
-        pendingUp = Task {
-            try? await Task.sleep(for: doubleUpWindow)
-            guard !Task.isCancelled else { return }
-            pendingUp = nil
-            perform(.up)
-        }
+        if session.target != nil { lastUpSave = .now }
+        perform(.up)
     }
 
     /// Number key. Adds the current photo to that number's album right away and moves on.
@@ -268,13 +268,14 @@ struct SwipeScreen: View {
         }
     }
 
-    private func commit(_ direction: SwipeDirection, size: CGSize) {
+    /// `keyboard` saves (↑) fly only 30% of the height and take 0.08 s, so a key press feels instant.
+    private func commit(_ direction: SwipeDirection, size: CGSize, keyboard: Bool = false) {
         if direction.advances(hasTarget: session.target != nil) {
             isAnimating = true
             // Saving to an album (up) is the most frequent move: a shorter, fading flight feels quicker.
             let isUp = direction == .up
-            withAnimation(.easeOut(duration: isUp ? 0.12 : 0.18)) {
-                drag = direction.offscreenOffset(in: size)
+            withAnimation(.easeOut(duration: isUp ? (keyboard ? 0.08 : 0.12) : 0.18)) {
+                drag = isUp && keyboard ? CGSize(width: 0, height: -size.height * 0.3) : direction.offscreenOffset(in: size)
                 if isUp { fading = true }
             } completion: {
                 apply(direction)
