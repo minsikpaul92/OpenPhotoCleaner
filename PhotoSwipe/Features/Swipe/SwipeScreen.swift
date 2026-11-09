@@ -53,7 +53,7 @@ struct SwipeScreen: View {
         // Only the first press: holding the key must not auto-repeat saves through the whole library.
         .onKeyPress(.upArrow, phases: .down) { _ in perform(.up); return .handled }
         // A = open the album picker (change the target album).
-        .onKeyPress(characters: CharacterSet(charactersIn: "aA"), phases: .down) { _ in
+        .onKeyPress(characters: .albumKey, phases: .down) { _ in
             albumPicker = .changeTarget
             return .handled
         }

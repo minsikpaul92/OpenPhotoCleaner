@@ -63,7 +63,7 @@ struct AlbumPickerSheet: View {
                     showNewAlbum = true
                     return .handled
                 }
-                .onKeyPress(characters: CharacterSet(charactersIn: "sS"), phases: .down) { _ in
+                .onKeyPress(characters: .sortKey, phases: .down) { _ in
                     toggleSort()
                     return .handled
                 }
