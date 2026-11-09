@@ -29,11 +29,7 @@ struct AssetImageView: View {
         options.isNetworkAccessAllowed = true
         requestID = PHImageManager.default().requestImage(for: asset, targetSize: targetSize, contentMode: fill ? .aspectFill : .aspectFit, options: options) { platformImage, _ in
             guard let platformImage else { return }
-            #if canImport(UIKit)
-            image = Image(uiImage: platformImage)
-            #else
-            image = Image(nsImage: platformImage)
-            #endif
+            image = Image(platform: platformImage)
         }
     }
 
