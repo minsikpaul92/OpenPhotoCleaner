@@ -152,22 +152,17 @@ struct SwipeScreen: View {
         }
         return ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                if entries.isEmpty {
-                    Text("No numbered albums · press A to open the album picker, then press a number key on a tile")
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(entries, id: \.digit) { entry in
-                        HStack(spacing: 6) {
-                            Text(entry.digit)
-                                .font(.caption.weight(.bold).monospacedDigit())
-                                .frame(width: 18, height: 18)
-                                .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
-                            Text(entry.title).lineLimit(1)
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(.thinMaterial, in: Capsule())
+                ForEach(entries, id: \.digit) { entry in
+                    HStack(spacing: 6) {
+                        Text(entry.digit)
+                            .font(.caption.weight(.bold).monospacedDigit())
+                            .frame(width: 18, height: 18)
+                            .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
+                        Text(entry.title).lineLimit(1)
                     }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(.thinMaterial, in: Capsule())
                 }
             }
             .font(.footnote)

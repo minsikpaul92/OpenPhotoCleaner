@@ -721,16 +721,6 @@
           }
         }
       }
-    },
-    "No numbered albums · press A to open the album picker, then press a number key on a tile": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "번호 앨범 없음 · A로 앨범 선택창을 열고 칸에서 숫자키로 번호를 지정하세요"
-          }
-        }
-      }
     }
   },
   "version": "1.0"
