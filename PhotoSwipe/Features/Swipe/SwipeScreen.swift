@@ -12,6 +12,8 @@ struct SwipeScreen: View {
     @State private var drag: CGSize = .zero
     @State private var isAnimating = false
     @State private var fading = false
+    /// Previous photo flying away over the next one (keyboard moves), so no frame is ever blank.
+    @State private var leaving: LeavingCard?
     @State private var albumPicker: AlbumPickerMode?
     @State private var isClosing = false
     /// When the last ↑ key saved to the target album; a second ↑ soon after turns it into "open the picker".
@@ -91,6 +93,12 @@ struct SwipeScreen: View {
                         .offset(drag)
                         .rotationEffect(.degrees(Double(drag.width) / 40))
                         .opacity(fading ? 0 : 1)
+                    if let leaving {
+                        LeavingView(card: leaving) {
+                            if self.leaving?.id == leaving.id { self.leaving = nil }
+                        }
+                        .id(leaving.id)
+                    }
                     #if os(macOS)
                     EdgeHints(
                         container: proxy.size,
@@ -268,29 +276,49 @@ struct SwipeScreen: View {
         }
     }
 
-    /// `keyboard` saves (↑) fly only 30% of the height and take 0.08 s, so a key press feels instant.
+    /// Touch moves fly the live card off screen, then switch photos. Keyboard moves (`keyboard`) switch right away
+    /// and fly a copy of the old photo away over the new one, so there is never a blank frame between photos.
     private func commit(_ direction: SwipeDirection, size: CGSize, keyboard: Bool = false) {
-        if direction.advances(hasTarget: session.target != nil) {
-            isAnimating = true
-            // Saving to an album (up) is the most frequent move: a shorter, fading flight feels quicker.
-            let isUp = direction == .up
-            withAnimation(.easeOut(duration: isUp ? (keyboard ? 0.08 : 0.12) : 0.18)) {
-                drag = isUp && keyboard ? CGSize(width: 0, height: -size.height * 0.3) : direction.offscreenOffset(in: size)
-                if isUp { fading = true }
-            } completion: {
-                apply(direction)
-                var reset = Transaction()
-                reset.disablesAnimations = true
-                withTransaction(reset) {
-                    drag = .zero
-                    fading = false
-                }
-                isAnimating = false
-            }
-        } else {
+        guard direction.advances(hasTarget: session.target != nil) else {
             apply(direction)
             withAnimation(.spring) { drag = .zero }
+            return
         }
+        if keyboard {
+            flyAway(direction, size: size)
+            return
+        }
+        isAnimating = true
+        // Saving to an album (up) is the most frequent move: a shorter, fading flight feels quicker.
+        let isUp = direction == .up
+        withAnimation(.easeOut(duration: isUp ? 0.12 : 0.18)) {
+            drag = direction.offscreenOffset(in: size)
+            if isUp { fading = true }
+        } completion: {
+            apply(direction)
+            var reset = Transaction()
+            reset.disablesAnimations = true
+            withTransaction(reset) {
+                drag = .zero
+                fading = false
+            }
+            isAnimating = false
+        }
+    }
+
+    /// Applies the move now and lets a copy of the old photo drift 30% of the way out and fade, over the new photo.
+    /// Without a prefetched copy of the old photo it simply switches.
+    private func flyAway(_ direction: SwipeDirection, size: CGSize) {
+        if let asset = session.current, let image = PhotoLoader.shared.cachedImage(for: asset) {
+            let end: CGSize
+            switch direction {
+            case .left: end = CGSize(width: -size.width * 0.3, height: 0)
+            case .right: end = CGSize(width: size.width * 0.3, height: 0)
+            default: end = CGSize(width: 0, height: -size.height * 0.3)
+            }
+            leaving = LeavingCard(image: image, end: end)
+        }
+        apply(direction)
     }
 
     private func apply(_ direction: SwipeDirection) {
@@ -330,4 +358,30 @@ struct SwipeScreen: View {
 extension Notification.Name {
     /// Posted by the Mac Undo menu command (⌘Z) and by a shake on iPhone; the card view performs the undo.
     static let undoRequested = Notification.Name("undoRequested")
+}
+
+/// A copy of the photo that was just moved past, drawn over the new photo while it drifts away.
+private struct LeavingCard: Identifiable {
+    let id = UUID()
+    let image: Image
+    let end: CGSize
+}
+
+private struct LeavingView: View {
+    let card: LeavingCard
+    let onDone: () -> Void
+    @State private var flying = false
+
+    var body: some View {
+        card.image
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .offset(flying ? card.end : .zero)
+            .opacity(flying ? 0 : 1)
+            .allowsHitTesting(false)
+            .onAppear {
+                withAnimation(.easeOut(duration: 0.1)) { flying = true } completion: { onDone() }
+            }
+    }
 }
