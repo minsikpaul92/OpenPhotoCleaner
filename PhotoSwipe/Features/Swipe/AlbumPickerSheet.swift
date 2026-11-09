@@ -67,6 +67,9 @@ struct AlbumPickerSheet: View {
                     toggleSort()
                     return .handled
                 }
+                #if os(macOS)
+                .onPhysicalKey(PhysicalKeyCode.s, enabled: !showNewAlbum) { toggleSort() }
+                #endif
                 .onKeyPress(characters: .decimalDigits, phases: .down) { press in
                     if let digit = press.characters.first.map(String.init), let album = focusedAlbum {
                         Task { await assignSlot(digit, to: album) }

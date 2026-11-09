@@ -57,6 +57,10 @@ struct SwipeScreen: View {
             albumPicker = .changeTarget
             return .handled
         }
+        #if os(macOS)
+        // Same key by position, so it works on a Korean layout whatever character it produces.
+        .onPhysicalKey(PhysicalKeyCode.a, enabled: albumPicker == nil && !isBlocked) { albumPicker = .changeTarget }
+        #endif
         .onKeyPress(.downArrow) { perform(.down); return .handled }
         .onKeyPress(.escape) { requestClose(); return .handled }
         // Delete = same as ← (delete queue), Return = same as → (keep).

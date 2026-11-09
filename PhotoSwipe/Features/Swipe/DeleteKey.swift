@@ -15,7 +15,8 @@ extension View {
 extension CharacterSet {
     // Letter shortcuts also match what the same physical key types with the Korean 2-set layout
     // (compatibility jamo, plus the conjoining jamo some input methods send), so they work without
-    // switching to English. shortcut: other non-Latin layouts are not covered; use key codes if needed.
+    // switching to English. Used on iOS only; Mac matches the physical key (see PhysicalKey.swift).
+    // shortcut: other non-Latin layouts are not covered on iOS.
     /// A (Album): opens the album picker.
     static let albumKey = CharacterSet(charactersIn: "aAㅁ\u{1106}")
     /// S (Sort): toggles the album order.
