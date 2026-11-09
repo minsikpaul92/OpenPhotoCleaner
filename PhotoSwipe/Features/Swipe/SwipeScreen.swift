@@ -31,7 +31,7 @@ struct SwipeScreen: View {
         }
         .environment(\.colorScheme, Platform.desktopStyle ? .dark : colorScheme)
         .background(Platform.desktopStyle ? Color.black : Color.platformBackground)
-        .overlay(alignment: .top) { toastView }
+        .overlay { toastView }
         .onReceive(NotificationCenter.default.publisher(for: .undoRequested)) { _ in performUndo() }
         .focusable()
         .focused($focused)
@@ -179,16 +179,20 @@ struct SwipeScreen: View {
 
     @ViewBuilder
     private var toastView: some View {
-        if let toast {
-            Text(toast)
-                .font(.title3.weight(.semibold))
-                .padding(.horizontal, 22)
-                .padding(.vertical, 12)
-                .background(.thinMaterial, in: Capsule())
-                .padding(.top, 150)
-                .transition(.opacity)
-                .allowsHitTesting(false)
+        // Sits 30% of the height up from the bottom.
+        GeometryReader { proxy in
+            if let toast {
+                Text(toast)
+                    .font(.title3.weight(.semibold))
+                    .padding(.horizontal, 22)
+                    .padding(.vertical, 12)
+                    .background(.thinMaterial, in: Capsule())
+                    .frame(maxWidth: .infinity)
+                    .position(x: proxy.size.width / 2, y: proxy.size.height * 0.7)
+                    .transition(.opacity)
+            }
         }
+        .allowsHitTesting(false)
     }
 
     // Temporary previous button. To be replaced by undo.
