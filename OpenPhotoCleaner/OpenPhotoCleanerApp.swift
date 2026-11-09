@@ -1,10 +1,10 @@
 import SwiftUI
 
 #if os(iOS)
-/// Shake events travel up the responder chain and end at the app delegate, so this hears a shake
+/// Shake events go to the first responder and then up the chain to the window, so the window hears a shake
 /// whichever view has focus (a view-level first responder is taken over by SwiftUI's focus system).
-final class ShakeAppDelegate: UIResponder, UIApplicationDelegate {
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+extension UIWindow {
+    open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
             NotificationCenter.default.post(name: .undoRequested, object: nil)
         } else {
@@ -15,10 +15,6 @@ final class ShakeAppDelegate: UIResponder, UIApplicationDelegate {
 #endif
 
 @main struct OpenPhotoCleanerApp: App {
-    #if os(iOS)
-    @UIApplicationDelegateAdaptor(ShakeAppDelegate.self) private var appDelegate
-    #endif
-
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -10,6 +10,7 @@ struct PhotoGridView: View {
     let onOpen: (Int) -> Void
     @State private var selected: Int
     @State private var showQueue = false
+    @State private var showInfo = false
     @FocusState private var focused: Bool
 
     private let cellSize: CGFloat = 100
@@ -40,19 +41,14 @@ struct PhotoGridView: View {
                     Button("Delete Queue (\(session.queue.count))") { showQueue = true }
                         .disabled(session.queue.count == 0)
                 }
-                #if os(iOS)
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        NotificationCenter.default.post(name: .showTutorial, object: nil)
-                    } label: {
-                        Image(systemName: "questionmark.circle")
-                    }
-                    .accessibilityLabel("How to Sort Photos")
+                ToolbarItem(placement: infoPlacement) {
+                    Button { showInfo = true } label: { Image(systemName: "info.circle") }
+                        .accessibilityLabel("About")
                 }
-                #endif
             }
         }
         .sheet(isPresented: $showQueue) { QueueSheet(session: session) }
+        .sheet(isPresented: $showInfo) { InfoSheet() }
         .onAppear { focused = isActive }
         .onChange(of: isActive) {
             guard isActive else { return }
@@ -78,6 +74,7 @@ struct PhotoGridView: View {
                         }
                     }
                 }
+                .refreshable { session.reload() }
                 .onAppear { reader.scrollTo(selected, anchor: .center) }
                 .onChange(of: selected) { reader.scrollTo(selected) }
                 .onChange(of: isActive) {
@@ -102,6 +99,15 @@ struct PhotoGridView: View {
                 AssetImageView(asset: session.items[index], targetSize: CGSize(width: 300, height: 300), fill: true)
             }
             .clipped()
+            .overlay(alignment: .topTrailing) {
+                if session.isChecked(session.items[index]) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.callout)
+                        .foregroundStyle(.white, .green)
+                        .padding(4)
+                        .accessibilityLabel("Reviewed")
+                }
+            }
             .overlay {
                 if index == selected {
                     Rectangle().strokeBorder(Color.accentColor, lineWidth: 3)
@@ -109,6 +115,14 @@ struct PhotoGridView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture { open(index) }
+    }
+
+    private var infoPlacement: ToolbarItemPlacement {
+        #if os(iOS)
+        .topBarLeading
+        #else
+        .navigation
+        #endif
     }
 
     private func clamped(_ index: Int) -> Int {

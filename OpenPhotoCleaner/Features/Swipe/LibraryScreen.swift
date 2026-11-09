@@ -35,6 +35,10 @@ struct LibraryScreen: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .showTutorial)) { _ in tutorialSeen = false }
         .onChange(of: showCard) { UserDefaults.standard.set(showCard, forKey: "ui.cardOpen") }
+        // In the grid the card view is gone, so undo (⌘Z, shake) is handled here; the card view handles it while open.
+        .onReceive(NotificationCenter.default.publisher(for: .undoRequested)) { _ in
+            if !showCard && tutorialSeen { Task { _ = await session.undo() } }
+        }
         .alert("Couldn't Finish", isPresented: Binding(get: { session.lastError != nil }, set: { if !$0 { session.lastError = nil } })) {
             Button("OK") {}
         } message: {

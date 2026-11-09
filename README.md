@@ -15,12 +15,12 @@ Everything happens on your device, in your own Photos library; nothing is upload
 |---|---|
 | Swipe **right** / `←` / `⌫` | Add to the **delete queue** and go to the next photo |
 | Swipe **left** / `→` / `↩` | Keep and go to the next photo |
-| Swipe up / `↑` | Save to the target album (asks for one the first time) |
+| Swipe up / `↑` | Save to the chosen album (asks for one the first time) |
 | Swipe down / `↓` / `Esc` | Back to the photo grid |
 | `1`–`0` (Mac, iPad) | Save to the album you assigned to that number |
-| `A` (`ㅁ`) | Choose the target album |
+| `A` | Choose the album |
 | `Space` | Toggle Favorite |
-| `T` (`ㅅ`) | Rotate 90° clockwise |
+| `R` | Rotate 90° clockwise |
 | `⌘Z` / shake / ↩ button | Undo (several steps) |
 
 Touch swipes push the card away from the action: the hint you reveal on the opposite side
@@ -35,7 +35,8 @@ menus), and every action is in the menu bar on Mac and iPad.
   key again) to take it out of that album.
 - **Rotation and favorites are normal Photos edits.** Rotation keeps the original
   (use *Revert* in Photos to undo it); it works for still photos, not Live Photos or video.
-- **Resumes where you stopped**, in the card view or in the grid.
+- **Resumes where you stopped**, in the card view or in the grid, at the first photo you have not checked yet.
+- **Green checks** in the grid mark photos you kept or added to an album. Pull down in the grid to pick up newly added photos.
 - **Mac and iPad share one layout** (black photo background, key hints, numbered-album
   list, keyboard-driven album picker and queue). iPhone keeps the touch-first layout.
 - English and Korean. Change the language in the system settings for the app.
@@ -67,7 +68,12 @@ The app asks for full photo library access on first launch.
 - The delete confirmation comes from the system and cannot be changed or skipped.
 - The delete queue, resume position, number shortcuts and target album are stored
   per device and are not synced. Deleted photos follow iCloud Photos as usual.
-- Letter shortcuts work with English and Korean keyboards.
+
+## Support
+
+If the app saves you time, you can buy me a coffee. A GitHub star helps too.
+
+[![Buy me a coffee](docs/bmc-button.svg)](https://buymeacoffee.com/minsikpaul92)
 
 ## License
 

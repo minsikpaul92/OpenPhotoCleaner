@@ -592,16 +592,6 @@
         }
       }
     },
-    "Saves to the target album right away (asks for one if none is set)": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "대상 앨범에 바로 저장 (없으면 앨범 선택)"
-          }
-        }
-      }
-    },
     "Select": {
       "localizations": {
         "ko": {
@@ -898,6 +888,146 @@
           "stringUnit": {
             "state": "translated",
             "value": "터치: 오른쪽으로 밀면 삭제, 왼쪽으로 밀면 유지"
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정보"
+          }
+        }
+      }
+    },
+    "Album Button": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앨범 단추"
+          }
+        }
+      }
+    },
+    "GitHub": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub"
+          }
+        }
+      }
+    },
+    "If photos are waiting in the delete queue, you can delete them all at once or leave them in the queue to decide later": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "삭제 대기열에 사진이 있으면 한꺼번에 삭제하거나, 나중에 정하도록 대기열에 그대로 둘 수 있습니다"
+          }
+        }
+      }
+    },
+    "If you like it, please give it a star on GitHub.": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마음에 드셨다면 GitHub에서 스타를 한 번씩 눌러 주세요."
+          }
+        }
+      }
+    },
+    "LinkedIn": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LinkedIn"
+          }
+        }
+      }
+    },
+    "Made to tidy up a pile of photos simply and quickly. Enjoy!": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쌓여 있는 사진첩을 간단하고 빠르게 정리하기 위해 만들었습니다. 편하게 이용해 주세요."
+          }
+        }
+      }
+    },
+    "Next": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다음"
+          }
+        }
+      }
+    },
+    "OpenPhotoCleaner": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenPhotoCleaner"
+          }
+        }
+      }
+    },
+    "Reviewed": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "확인함"
+          }
+        }
+      }
+    },
+    "Rotate 90°": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "90° 회전"
+          }
+        }
+      }
+    },
+    "Saves to the chosen album right away (asks for one if none is chosen)": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 앨범에 바로 저장 (없으면 앨범 선택)"
+          }
+        }
+      }
+    },
+    "Star on GitHub": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub에서 스타 누르기"
+          }
+        }
+      }
+    },
+    "Tap the album name above the photo to choose an album, sort (recent or by name) and add a new one. Press and hold an album to delete it.": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진 위의 앨범 이름을 누르면 앨범 선택, 정렬(최신순/이름순), 새 앨범 추가를 할 수 있습니다. 앨범을 꾹 누르면 삭제할 수 있습니다."
           }
         }
       }

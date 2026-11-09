@@ -73,7 +73,7 @@ struct AlbumPickerSheet: View {
                 .onPhysicalKey(PhysicalKeyCode.s, enabled: !showNewAlbum) { toggleSort() }
                 #endif
                 .onKeyPress(characters: .decimalDigits, phases: .down) { press in
-                    if let digit = press.characters.first.map(String.init), let album = focusedAlbum {
+                    if Platform.desktopStyle, let digit = press.characters.first.map(String.init), let album = focusedAlbum {
                         Task { await assignSlot(digit, to: album) }
                     }
                     return .handled
@@ -156,7 +156,7 @@ struct AlbumPickerSheet: View {
         .padding(8)
         .background(isTarget ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
         .overlay(alignment: .topLeading) {
-            if let slot {
+            if Platform.desktopStyle, let slot {
                 Text(slot)
                     .font(.caption.weight(.bold).monospacedDigit())
                     .foregroundStyle(.white)
@@ -185,13 +185,16 @@ struct AlbumPickerSheet: View {
         }
         .contextMenu {
             // Touch equivalent of pressing a number key on the tile. The same number again clears it.
-            Menu("Number") {
-                ForEach(AlbumLibrary.slotKeys, id: \.self) { digit in
-                    Button(digit) { Task { await assignSlot(digit, to: album) } }
+            // Numbered albums are not offered on iPhone.
+            if Platform.desktopStyle {
+                Menu("Number") {
+                    ForEach(AlbumLibrary.slotKeys, id: \.self) { digit in
+                        Button(digit) { Task { await assignSlot(digit, to: album) } }
+                    }
                 }
-            }
-            if let slot {
-                Button("Clear Number") { Task { await assignSlot(slot, to: album) } }
+                if let slot {
+                    Button("Clear Number") { Task { await assignSlot(slot, to: album) } }
+                }
             }
             if !album.isPlaceholder {
                 Button("Delete Album", role: .destructive) { deleteAlbum(album) }

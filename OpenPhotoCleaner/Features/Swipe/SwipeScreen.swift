@@ -33,6 +33,20 @@ struct SwipeScreen: View {
         .environment(\.colorScheme, Platform.desktopStyle ? .dark : colorScheme)
         .background(Platform.desktopStyle ? Color.black : Color.platformBackground)
         .overlay { toastView }
+        #if os(iOS)
+        // The guide describes this screen, so its button lives here (Mac and iPad also have Help > How to Sort Photos).
+        .overlay(alignment: .topTrailing) {
+            Button {
+                NotificationCenter.default.post(name: .showTutorial, object: nil)
+            } label: {
+                Image(systemName: "questionmark.circle")
+                    .font(.title3)
+                    .frame(minWidth: 44, minHeight: 44)
+            }
+            .accessibilityLabel("How to Sort Photos")
+            .opacity(drag == .zero ? 1 : 0)
+        }
+        #endif
         .onReceive(NotificationCenter.default.publisher(for: .undoRequested)) { _ in performUndo() }
         .focusable()
         .focused($focused)
@@ -60,7 +74,7 @@ struct SwipeScreen: View {
         .onPhysicalKey(PhysicalKeyCode.a, enabled: albumPicker == nil && !isBlocked) { albumPicker = .changeTarget }
         #endif
         .onKeyPress(.downArrow) { perform(.down); return .handled }
-        // Space = Favorite, T = Turn (rotate 90°). Buttons in the bottom row do the same by touch.
+        // Space = Favorite, R = Rotate 90°. Buttons in the bottom row do the same by touch.
         .onKeyPress(.space, phases: .down) { _ in toggleFavorite(); return .handled }
         .onKeyPress(characters: .rotateKey, phases: .down) { _ in rotate(); return .handled }
         .onKeyPress(.escape) { requestClose(); return .handled }
@@ -164,7 +178,7 @@ struct SwipeScreen: View {
         let entries = AlbumLibrary.slotKeys.compactMap { digit in
             session.albums.slotTitles[digit].map { (digit: digit, title: $0) }
         }
-        if Platform.desktopStyle || !entries.isEmpty {
+        if Platform.desktopStyle {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(entries, id: \.digit) { entry in
@@ -257,7 +271,7 @@ struct SwipeScreen: View {
 
     /// Number key. Adds the current photo to that number's album right away and moves on.
     private func quickAdd(_ characters: String) {
-        guard let digit = characters.first.map(String.init), session.current != nil else { return }
+        guard Platform.desktopStyle, let digit = characters.first.map(String.init), session.current != nil else { return }
         switch session.toggleCurrent(toSlot: digit) {
         case .added(let album): showToast(String(localized: "\(digit) · Added to \(album.title)"))
         case .removed(let album): showToast(String(localized: "\(digit) · Removed from \(album.title)"))

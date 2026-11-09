@@ -4,6 +4,7 @@ import SwiftUI
 struct TutorialOverlay: View {
     let onDismiss: () -> Void
     @FocusState private var focused: Bool
+    @State private var page = 0
 
     var body: some View {
         ZStack {
@@ -13,28 +14,8 @@ struct TutorialOverlay: View {
             VStack(alignment: .leading, spacing: 14) {
                 Text("How to Sort Photos")
                     .font(.title2.bold())
-                row(.left, "Delete", "Moves it to the delete queue and hides it from the list")
-                row(.right, "Keep", "Leave it as is and go to the next photo")
-                row(.up, "Save to Album", "Saves to the target album right away (asks for one if none is set)")
-                row(.down, "Show Grid", "Return to the photo grid")
-                if Platform.desktopStyle {
-                Divider()
-                extra("1 ~ 0", "Save to the album with that number")
-                extra("⌫ / ↩", "Delete / Keep, same as ← / →")
-                extra("A", "Open the album picker")
-                extra("Esc", "Back to the grid")
-                extra("⌘ Z", "Undo the last action")
-                #if os(iOS)
-                extra("↔", "By touch: swipe right to Delete, left to Keep")
-                #endif
-                }
-                #if os(iOS)
-                if UIDevice.current.userInterfaceIdiom != .pad {
-                    Divider()
-                    extra("Shake", "Undo the last action")
-                }
-                #endif
-                Button("Get Started", action: onDismiss)
+                if page == 0 { firstPage } else { secondPage }
+                Button(page == 0 ? "Next" : "Get Started", action: next)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
                     .frame(maxWidth: .infinity, alignment: .trailing)
@@ -50,8 +31,53 @@ struct TutorialOverlay: View {
         .focusEffectDisabled()
         .onAppear { focused = true }
         .onKeyPress { press in
-            if press.key == .return || press.key == .escape || press.key == .space { onDismiss() }
+            if press.key == .escape { onDismiss() }
+            if press.key == .return || press.key == .space { next() }
             return .handled
+        }
+    }
+
+    private func next() {
+        if page == 0 { page = 1 } else { onDismiss() }
+    }
+
+    @ViewBuilder private var firstPage: some View {
+        row(.left, "Delete", "Moves it to the delete queue and hides it from the list")
+        row(.right, "Keep", "Leave it as is and go to the next photo")
+        row(.up, "Save to Album", "Saves to the chosen album right away (asks for one if none is chosen)")
+        row(.down, "Show Grid", "Return to the photo grid")
+        if Platform.desktopStyle {
+            Divider()
+            extra("1 ~ 0", "Save to the album with that number")
+            extra("⌫ / ↩", "Delete / Keep, same as ← / →")
+            extra("A", "Open the album picker")
+            extra("R", "Rotate 90°")
+            extra("Esc", "Back to the grid")
+            extra("⌘ Z", "Undo the last action")
+            #if os(iOS)
+            extra("↔", "By touch: swipe right to Delete, left to Keep")
+            #endif
+        }
+        #if os(iOS)
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            Divider()
+            extra("Shake", "Undo the last action")
+        }
+        #endif
+    }
+
+    @ViewBuilder private var secondPage: some View {
+        row(.down, "Show Grid", "If photos are waiting in the delete queue, you can delete them all at once or leave them in the queue to decide later")
+        HStack(spacing: 12) {
+            Image(systemName: "folder")
+                .font(.title3.weight(.bold))
+                .foregroundStyle(.tint)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Album Button").font(.headline)
+                Text("Tap the album name above the photo to choose an album, sort (recent or by name) and add a new one. Press and hold an album to delete it.")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
         }
     }
 

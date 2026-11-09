@@ -42,7 +42,7 @@ struct LetterShortcutTests {
 
     @Test func sortAndRotateKeysMatchEnglishAndKorean() {
         #expect(CharacterSet.sortKey.contains("s") && CharacterSet.sortKey.contains("ㄴ"))
-        #expect(CharacterSet.rotateKey.contains("t") && CharacterSet.rotateKey.contains("ㅅ"))
+        #expect(CharacterSet.rotateKey.contains("r") && CharacterSet.rotateKey.contains("ㄱ"))
     }
 }
 
