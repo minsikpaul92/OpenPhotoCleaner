@@ -382,7 +382,7 @@ private struct LeavingView: View {
             .opacity(flying ? 0 : 1)
             .allowsHitTesting(false)
             .onAppear {
-                withAnimation(.easeOut(duration: 0.1)) { flying = true } completion: { onDone() }
+                withAnimation(.easeOut(duration: 0.25)) { flying = true } completion: { onDone() }
             }
     }
 }
