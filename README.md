@@ -1,63 +1,72 @@
 # OpenPhotoCleaner
 
-Sort your photo library fast, with a swipe on iPhone or the arrow keys on Mac.
-Each photo is one decision: delete it, keep it, or file it into an album.
+Sort your photo library fast: one decision per photo, with a swipe on iPhone or the
+arrow keys on Mac and iPad. Delete it, keep it, or file it into an album.
 
-Native SwiftUI for iPhone (iOS 17+) and Mac (macOS 14+). It only uses Apple
-frameworks (PhotoKit) and has no third-party dependencies. Everything happens on
-your device, in your own Photos library; nothing is uploaded.
+Native SwiftUI for iPhone, iPad (iOS 17+) and Mac (macOS 14+). It only uses Apple
+frameworks (PhotoKit) and has no third-party dependencies, no ads and no analytics.
+Everything happens on your device, in your own Photos library; nothing is uploaded.
 
-> Status: early. The core flow and multi-step undo work; a test suite is not done yet.
+> Status: early. The core flow, undo and a small test suite work.
 
 ## How it works
 
 | Gesture / key | Action |
 |---|---|
-| Swipe left / `←` | Add to the **delete queue** and go to the next photo |
-| Swipe right / `→` | Keep and go to the next photo |
+| Swipe left / `←` / `⌫` | Add to the **delete queue** and go to the next photo |
+| Swipe right / `→` / `↩` | Keep and go to the next photo |
 | Swipe up / `↑` | Save to the target album (asks for one the first time) |
-| Swipe down / `↓` | Back to the photo grid |
+| Swipe down / `↓` / `Esc` | Back to the photo grid |
+| `1`–`0` (Mac, iPad) | Save to the album you assigned to that number |
+| `A` (`ㅁ`) | Choose the target album |
+| `Space` | Toggle Favorite |
+| `T` (`ㅅ`) | Rotate 90° clockwise |
+| `⌘Z` / shake / ↩ button | Undo (several steps) |
 
-- **Nothing is deleted immediately.** Photos go into a delete queue, hidden from
-  the flow. You review the queue, restore anything, then delete in one batch.
-  The system asks for confirmation, and deleted photos go to
-  *Recently Deleted*.
-- **Albums are real Photos albums.** Adding a photo to an album does not copy it,
-  and a photo can be in several albums. Tap an album chip on the photo (or press
-  its number key again on Mac) to take it out of that album.
-- **Undo:** `⌘Z` on Mac, shake the device on iPhone. It undoes keep, queue add and
-  album changes, most recent first.
+Every key has a touch equivalent (buttons under the photo, tappable chips, context
+menus), and every action is in the menu bar on Mac and iPad.
+
+- **Nothing is deleted immediately.** Photos go into a delete queue, hidden from the
+  flow. You review the queue, restore anything, then delete in one batch. The system
+  asks for confirmation, and deleted photos go to *Recently Deleted*.
+- **Albums are real Photos albums.** Adding a photo to an album does not copy it, and a
+  photo can be in several albums. Tap an album chip on the photo (or press its number
+  key again) to take it out of that album.
+- **Rotation and favorites are normal Photos edits.** Rotation keeps the original
+  (use *Revert* in Photos to undo it); it works for still photos, not Live Photos or video.
 - **Resumes where you stopped**, in the card view or in the grid.
-- Mac extras: number keys `1`–`0` file the photo into the album you assigned to
-  that number, `A` opens the album picker, `Esc` goes back to the grid, and the
-  album picker and queue are fully keyboard driven.
-- iPad uses the Mac-style layout and keyboard shortcuts (with a hardware keyboard).
+- **Mac and iPad share one layout** (black photo background, key hints, numbered-album
+  list, keyboard-driven album picker and queue). iPhone keeps the touch-first layout.
 - English and Korean. Change the language in the system settings for the app.
 
-## Build
+## Build and test
 
 Requires a recent Xcode (the project uses Xcode 27's plain-text `project.xcproj`).
 
 ```bash
 git clone https://github.com/minsikpaul92/OpenPhotoCleaner.git
 cd OpenPhotoCleaner
-xcodebuild -project PhotoSwipe.xcodeproj -scheme PhotoSwipe \
+xcodebuild -project OpenPhotoCleaner.xcodeproj -scheme OpenPhotoCleaner \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
-xcodebuild -project PhotoSwipe.xcodeproj -scheme PhotoSwipe \
+xcodebuild -project OpenPhotoCleaner.xcodeproj -scheme OpenPhotoCleaner \
   -destination 'platform=macOS' build
+xcodebuild test -project OpenPhotoCleaner.xcodeproj -scheme OpenPhotoCleaner \
+  -destination 'platform=macOS'
 ```
 
-The Xcode project and target are still named `PhotoSwipe`. To run on a device,
-open the project in Xcode, choose your own team under *Signing & Capabilities*
-and change the bundle identifier. A free Apple ID is enough. The app asks for
-full photo library access on first launch.
+To run on a device, open the project in Xcode, choose your own team under
+*Signing & Capabilities* and change the bundle identifier. A free Apple ID is enough.
+The app asks for full photo library access on first launch.
 
 ## Known limits
 
-- iCloud Shared Photo Library and People have no public API, so the app cannot
-  move photos into them. Use a regular album (the app offers a "Pending Share"
-  album) and move them in the Photos app.
+- iCloud Shared Photo Library and People have no public API, so the app cannot move
+  photos into them. Use a regular album (the app offers a "Pending Share" album) and
+  move them in the Photos app.
 - The delete confirmation comes from the system and cannot be changed or skipped.
+- The delete queue, resume position, number shortcuts and target album are stored
+  per device and are not synced. Deleted photos follow iCloud Photos as usual.
+- Letter shortcuts work with English and Korean keyboards.
 
 ## License
 

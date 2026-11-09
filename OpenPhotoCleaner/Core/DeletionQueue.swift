@@ -6,10 +6,13 @@ import Observation
 @Observable
 final class DeletionQueue {
     private let key = "deletionQueue.ids"
+    private let defaults: UserDefaults
     private(set) var ids: [String]
 
-    init() {
-        ids = UserDefaults.standard.stringArray(forKey: key) ?? []
+    /// `defaults` is injectable so tests never touch the app's real queue.
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        ids = defaults.stringArray(forKey: key) ?? []
     }
 
     var count: Int { ids.count }
@@ -76,6 +79,6 @@ final class DeletionQueue {
     }
 
     private func save() {
-        UserDefaults.standard.set(ids, forKey: key)
+        defaults.set(ids, forKey: key)
     }
 }

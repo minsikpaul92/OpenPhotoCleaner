@@ -28,7 +28,7 @@ final class AlbumLibrary {
     private let slotTitlesKey = "albums.slotTitles"
     private let lastUsedKey = "albums.lastUsed"
     private let sortKey = "albums.sortsByName"
-    private var defaults: UserDefaults { .standard }
+    private let defaults: UserDefaults
 
     /// Number to album id. An album has at most one number.
     private(set) var slotIDs: [String: String]
@@ -39,8 +39,9 @@ final class AlbumLibrary {
     /// True for by-name order, false for recently-used order.
     private(set) var sortsByName: Bool
 
-    init() {
-        let defaults = UserDefaults.standard
+    /// `defaults` is injectable so tests never touch the app's real stored state.
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
         slotIDs = defaults.dictionary(forKey: "albums.slotIDs") as? [String: String] ?? [:]
         slotTitles = defaults.dictionary(forKey: "albums.slotTitles") as? [String: String] ?? [:]
         lastUsed = defaults.dictionary(forKey: "albums.lastUsed") as? [String: Double] ?? [:]

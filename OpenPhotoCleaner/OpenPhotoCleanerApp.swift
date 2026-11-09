@@ -14,7 +14,7 @@ final class ShakeAppDelegate: UIResponder, UIApplicationDelegate {
 }
 #endif
 
-@main struct PhotoSwipeApp: App {
+@main struct OpenPhotoCleanerApp: App {
     #if os(iOS)
     @UIApplicationDelegateAdaptor(ShakeAppDelegate.self) private var appDelegate
     #endif

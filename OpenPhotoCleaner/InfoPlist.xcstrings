@@ -8,7 +8,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "PhotoSwipe"
+            "value" : "OpenPhotoCleaner"
           }
         }
       }
@@ -20,7 +20,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "PhotoSwipe needs permission to add photos to your albums."
+            "value" : "OpenPhotoCleaner needs permission to add photos to your albums."
           }
         },
         "ko" : {
@@ -38,7 +38,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "PhotoSwipe needs full access to your photo library to help you sort photos."
+            "value" : "OpenPhotoCleaner needs full access to your photo library to help you sort photos."
           }
         },
         "ko" : {
