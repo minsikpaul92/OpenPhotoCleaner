@@ -23,7 +23,6 @@ struct AlbumPickerSheet: View {
     @State private var focusedID: String?
     @State private var showNewAlbum = false
     @State private var newAlbumTitle = ""
-    @State private var pendingDelete: Album?
     @FocusState private var focused: Bool
 
     private let tileWidth: CGFloat = 120
@@ -59,14 +58,7 @@ struct AlbumPickerSheet: View {
                     if let album = focusedAlbum { pick(album) }
                     return .handled
                 }
-                .onKeyPress(.delete) { requestDelete(); return .handled }
-                .onKeyPress(.deleteForward) { requestDelete(); return .handled }
-                // Some keyboards deliver Delete as a different character, so handle it once more.
-                .onKeyPress(phases: .down) { press in
-                    guard press.characters == "\u{7F}" || press.characters == "\u{8}" else { return .ignored }
-                    requestDelete()
-                    return .handled
-                }
+                .onDeleteKey { requestDelete() }
                 .onKeyPress(characters: CharacterSet(charactersIn: "+="), phases: .down) { _ in
                     showNewAlbum = true
                     return .handled
@@ -111,16 +103,6 @@ struct AlbumPickerSheet: View {
             } message: {
                 Text("This only creates the album; it will not be set as the target.")
             }
-            .alert(
-                "Delete the album \"\(pendingDelete?.title ?? "")\"?",
-                isPresented: Binding(get: { pendingDelete != nil }, set: { if !$0 { pendingDelete = nil } }),
-                presenting: pendingDelete
-            ) { album in
-                Button("Delete Album", role: .destructive) { deleteAlbum(album) }
-                Button("Cancel", role: .cancel) {}
-            } message: { _ in
-                Text("Only the album is deleted. Its photos stay in your library.")
-            }
         }
         #if os(macOS)
         .frame(minWidth: 560, minHeight: 480)
@@ -130,7 +112,6 @@ struct AlbumPickerSheet: View {
             focused = true
         }
         .onChange(of: showNewAlbum) { focused = true }
-        .onChange(of: pendingDelete?.id) { focused = true }
     }
 
     #if os(macOS)
@@ -202,7 +183,7 @@ struct AlbumPickerSheet: View {
         }
         .contextMenu {
             if !album.isPlaceholder {
-                Button("Delete Album", role: .destructive) { pendingDelete = album }
+                Button("Delete Album", role: .destructive) { deleteAlbum(album) }
             }
         }
     }
@@ -255,15 +236,17 @@ struct AlbumPickerSheet: View {
         }
     }
 
+    /// Delete key / button: deletes the album under the dashed cell. The system asks for confirmation, so there is no extra prompt.
     private func requestDelete() {
         guard let album = focusedAlbum, !album.isPlaceholder else { return }
-        pendingDelete = album
+        deleteAlbum(album)
     }
 
     private func deleteAlbum(_ album: Album) {
         Task {
             await session.deleteAlbum(album)
             reload()
+            focused = true
         }
     }
 

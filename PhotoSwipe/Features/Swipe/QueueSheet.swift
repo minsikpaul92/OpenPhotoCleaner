@@ -99,8 +99,7 @@ struct QueueSheet: View {
                 if let focusedID { toggle(focusedID) }
                 return .handled
             }
-            .onKeyPress(.delete) { deleteSelected(); return .handled }
-            .onKeyPress(.deleteForward) { deleteSelected(); return .handled }
+            .onDeleteKey { deleteSelected() }
             .onKeyPress(.escape) { escape(); return .handled }
         }
     }

@@ -52,6 +52,9 @@ struct SwipeScreen: View {
         .onKeyPress(.upArrow, phases: .down) { _ in handleUp(); return .handled }
         .onKeyPress(.downArrow) { perform(.down); return .handled }
         .onKeyPress(.escape) { requestClose(); return .handled }
+        // Delete = same as ← (delete queue), Return = same as → (keep).
+        .onDeleteKey { perform(.left) }
+        .onKeyPress(.return) { perform(.right); return .handled }
         .onKeyPress(characters: .decimalDigits, phases: .down) { press in
             quickAdd(press.characters)
             return .handled

@@ -327,16 +327,6 @@
         }
       }
     },
-    "Delete the album \"%@\"?": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "\"%@\" 앨범을 삭제할까요?"
-          }
-        }
-      }
-    },
     "Done": {
       "localizations": {
         "ko": {
@@ -453,16 +443,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "확인"
-          }
-        }
-      }
-    },
-    "Only the album is deleted. Its photos stay in your library.": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범만 삭제되고 사진은 보관함에 그대로 남습니다."
           }
         }
       }
@@ -733,6 +713,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "흔들기"
+          }
+        }
+      }
+    },
+    "Delete / Keep, same as ← / →": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "삭제 / 유지 (← / →와 같음)"
           }
         }
       }
