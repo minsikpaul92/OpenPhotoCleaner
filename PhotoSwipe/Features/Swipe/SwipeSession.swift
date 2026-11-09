@@ -154,39 +154,17 @@ final class SwipeSession {
     }
 
     /// Adds the current photo to the album and moves on right away. The add runs in the background.
-    /// With `deferredBy` the add waits that long first and can be taken back with `cancelDeferredAdd()`,
-    /// so a quick ↑↑ never touches the album at all.
-    func addCurrent(to album: Album, deferredBy delay: Duration? = nil) {
+    func addCurrent(to album: Album) {
         guard let asset = current else { return }
         let membership = Membership()
         record(.addedToAlbum(asset, album, wasMember: membership))
         advance()
         let previous = pendingAdd
-        deferredAddWaiting = delay != nil
         pendingAdd = Task {
             await previous?.value
-            if let delay {
-                try? await Task.sleep(for: delay)
-                if Task.isCancelled { return }
-                deferredAddWaiting = false
-            }
             membership.value = albums.albums(containing: asset).contains(album)
             await add(asset, to: album)
         }
-    }
-
-    /// True while the last add is still waiting out its delay.
-    private var deferredAddWaiting = false
-
-    /// Cancels an add that is still waiting out its delay and goes back to its photo.
-    /// Returns false when there was nothing waiting (the add already ran; use `undo()` then).
-    func cancelDeferredAdd() -> Bool {
-        guard deferredAddWaiting, case .addedToAlbum(let asset, _, _)? = undoStack.last else { return false }
-        deferredAddWaiting = false
-        pendingAdd?.cancel()
-        undoStack.removeLast()
-        show(asset)
-        return true
     }
 
     enum SlotResult {

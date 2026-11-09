@@ -21,7 +21,7 @@ struct TutorialOverlay: View {
                 Divider()
                 extra("1 ~ 0", "Save to the album with that number")
                 extra("⌫ / ↩", "Delete / Keep, same as ← / →")
-                extra("↑ ↑", "Open the album picker")
+                extra("A", "Open the album picker")
                 extra("Esc", "Back to the grid")
                 extra("⌘ Z", "Undo the last action")
                 #else

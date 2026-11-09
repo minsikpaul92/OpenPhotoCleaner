@@ -29,7 +29,7 @@ your device, in your own Photos library; nothing is uploaded.
   album changes, most recent first.
 - **Resumes where you stopped**, in the card view or in the grid.
 - Mac extras: number keys `1`–`0` file the photo into the album you assigned to
-  that number, `↑↑` opens the album picker, `Esc` goes back to the grid, and the
+  that number, `A` opens the album picker, `Esc` goes back to the grid, and the
   album picker and queue are fully keyboard driven.
 - English and Korean. Change the language in the system settings for the app.
 

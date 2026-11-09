@@ -3,7 +3,7 @@ import Photos
 
 /// One-photo window shown above the grid.
 /// Controlled by four-way swipes on iPhone and the four arrow keys on Mac. Down closes the window and returns to the grid.
-/// Mac only: number key = save straight to the numbered album, ↑ twice = album picker, Esc = back to the grid.
+/// Mac only: number key = save straight to the numbered album, A = album picker, Esc = back to the grid.
 struct SwipeScreen: View {
     let session: SwipeSession
     /// True while the tutorial is shown on top. Key input resumes when it closes.
@@ -16,15 +16,11 @@ struct SwipeScreen: View {
     @State private var leaving: LeavingCard?
     @State private var albumPicker: AlbumPickerMode?
     @State private var isClosing = false
-    /// When the last ↑ key saved to the target album; a second ↑ soon after turns it into "open the picker".
-    @State private var lastUpSave: Date?
     @State private var cardSize = CGSize(width: 600, height: 800)
     @State private var toast: String?
     @FocusState private var focused: Bool
 
     private let threshold: CGFloat = 100
-    /// A second ↑ within this many seconds of a save counts as ↑↑ (open the album picker).
-    private let doubleUpWindow: TimeInterval = 0.4
 
     var body: some View {
         VStack(spacing: 0) {
@@ -54,7 +50,13 @@ struct SwipeScreen: View {
         .onChange(of: session.items.count) { prefetch() }
         .onKeyPress(.leftArrow) { perform(.left); return .handled }
         .onKeyPress(.rightArrow) { perform(.right); return .handled }
-        .onKeyPress(.upArrow, phases: .down) { _ in handleUp(); return .handled }
+        // Only the first press: holding the key must not auto-repeat saves through the whole library.
+        .onKeyPress(.upArrow, phases: .down) { _ in perform(.up); return .handled }
+        // A = open the album picker (change the target album).
+        .onKeyPress(characters: CharacterSet(charactersIn: "aA"), phases: .down) { _ in
+            albumPicker = .changeTarget
+            return .handled
+        }
         .onKeyPress(.downArrow) { perform(.down); return .handled }
         .onKeyPress(.escape) { requestClose(); return .handled }
         // Delete = same as ← (delete queue), Return = same as → (keep).
@@ -151,7 +153,7 @@ struct SwipeScreen: View {
         return ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 if entries.isEmpty {
-                    Text("No numbered albums · press ↑↑ to open the album picker, then press a number key on a tile")
+                    Text("No numbered albums · press A to open the album picker, then press a number key on a tile")
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(entries, id: \.digit) { entry in
@@ -229,29 +231,6 @@ struct SwipeScreen: View {
         commit(direction, size: cardSize, keyboard: true)
     }
 
-    /// ↑ key. Without a target album, open the picker. With one, save right away with no waiting; a second ↑ shortly
-    /// after takes that save back and opens the picker instead, so ↑↑ still opens it.
-    private func handleUp() {
-        if let last = lastUpSave, Date.now.timeIntervalSince(last) < doubleUpWindow {
-            lastUpSave = nil
-            // The save is still waiting (keyboard saves are delayed past the double-press window): just drop it.
-            if session.cancelDeferredAdd() {
-                albumPicker = .changeTarget
-                return
-            }
-            Task {
-                // Let the first save finish (it is recorded when its animation ends), then take it back.
-                while isAnimating { try? await Task.sleep(for: .milliseconds(20)) }
-                _ = await session.undo()
-                albumPicker = .changeTarget
-            }
-            return
-        }
-        guard !isAnimating else { return }
-        if session.target != nil { lastUpSave = .now }
-        perform(.up)
-    }
-
     /// Number key. Adds the current photo to that number's album right away and moves on.
     private func quickAdd(_ characters: String) {
         guard let digit = characters.first.map(String.init), session.current != nil else { return }
@@ -324,10 +303,10 @@ struct SwipeScreen: View {
             }
             leaving = LeavingCard(image: image, end: end)
         }
-        apply(direction, keyboard: true)
+        apply(direction)
     }
 
-    private func apply(_ direction: SwipeDirection, keyboard: Bool = false) {
+    private func apply(_ direction: SwipeDirection) {
         switch direction {
         case .left:
             session.trash()
@@ -335,8 +314,7 @@ struct SwipeScreen: View {
             session.keep()
         case .up:
             if let target = session.target {
-                // Keyboard saves wait a moment so a quick second ↑ (open the picker) can cancel them.
-                session.addCurrent(to: target, deferredBy: keyboard ? .milliseconds(450) : nil)
+                session.addCurrent(to: target)
             } else {
                 albumPicker = .addCurrent
             }
