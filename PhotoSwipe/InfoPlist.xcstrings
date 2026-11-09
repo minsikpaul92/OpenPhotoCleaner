@@ -1,0 +1,26 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "NSPhotoLibraryUsageDescription": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진을 정리하려면 사진 보관함 전체 접근이 필요합니다."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryAddUsageDescription": {
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진을 앨범에 추가하려면 권한이 필요합니다."
+          }
+        }
+      }
+    }
+  }
+}
