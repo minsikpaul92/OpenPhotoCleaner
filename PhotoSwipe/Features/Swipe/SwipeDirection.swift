@@ -64,7 +64,7 @@ enum SwipeDirection: CaseIterable {
         switch self {
         case .left: CGSize(width: -size.width * 1.3, height: 0)
         case .right: CGSize(width: size.width * 1.3, height: 0)
-        case .up: CGSize(width: 0, height: -size.height * 1.3)
+        case .up: CGSize(width: 0, height: -size.height * 0.6)
         case .down: CGSize(width: 0, height: size.height * 1.3)
         }
     }

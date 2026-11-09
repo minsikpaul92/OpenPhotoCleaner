@@ -53,8 +53,13 @@ final class SwipeSession {
     private enum Undoable {
         case kept(PHAsset)
         case trashed(PHAsset)
-        case addedToAlbum(PHAsset, Album, wasMember: Bool)
+        case addedToAlbum(PHAsset, Album, wasMember: Membership)
         case removedFromAlbum(PHAsset, Album)
+    }
+
+    /// Whether the photo was already in the album before an add. Filled in by the background add so the UI thread never waits on PhotoKit.
+    private final class Membership {
+        var value = false
     }
 
     private var undoStack: [Undoable] = []
@@ -84,7 +89,7 @@ final class SwipeSession {
                 return String(localized: "Restored from the delete queue")
             case .addedToAlbum(let asset, let album, let wasMember):
                 show(asset)
-                if wasMember { return String(localized: "Undid add") }
+                if wasMember.value { return String(localized: "Undid add") }
                 do {
                     try await albums.remove(asset, from: try await albums.resolve(album))
                     albumsVersion += 1
@@ -151,11 +156,13 @@ final class SwipeSession {
     /// Adds the current photo to the album and moves on right away. The add runs in the background.
     func addCurrent(to album: Album) {
         guard let asset = current else { return }
-        record(.addedToAlbum(asset, album, wasMember: albums.albums(containing: asset).contains(album)))
+        let membership = Membership()
+        record(.addedToAlbum(asset, album, wasMember: membership))
         advance()
         let previous = pendingAdd
         pendingAdd = Task {
             await previous?.value
+            membership.value = albums.albums(containing: asset).contains(album)
             await add(asset, to: album)
         }
     }

@@ -11,6 +11,7 @@ struct SwipeScreen: View {
     let onClose: () -> Void
     @State private var drag: CGSize = .zero
     @State private var isAnimating = false
+    @State private var fading = false
     @State private var albumPicker: AlbumPickerMode?
     @State private var isClosing = false
     @State private var pendingUp: Task<Void, Never>?
@@ -87,6 +88,7 @@ struct SwipeScreen: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .offset(drag)
                         .rotationEffect(.degrees(Double(drag.width) / 40))
+                        .opacity(fading ? 0 : 1)
                     #if os(macOS)
                     EdgeHints(
                         container: proxy.size,
@@ -269,11 +271,19 @@ struct SwipeScreen: View {
     private func commit(_ direction: SwipeDirection, size: CGSize) {
         if direction.advances(hasTarget: session.target != nil) {
             isAnimating = true
-            withAnimation(.easeOut(duration: 0.18)) {
+            // Saving to an album (up) is the most frequent move: a shorter, fading flight feels quicker.
+            let isUp = direction == .up
+            withAnimation(.easeOut(duration: isUp ? 0.12 : 0.18)) {
                 drag = direction.offscreenOffset(in: size)
+                if isUp { fading = true }
             } completion: {
                 apply(direction)
-                drag = .zero
+                var reset = Transaction()
+                reset.disablesAnimations = true
+                withTransaction(reset) {
+                    drag = .zero
+                    fading = false
+                }
                 isAnimating = false
             }
         } else {
