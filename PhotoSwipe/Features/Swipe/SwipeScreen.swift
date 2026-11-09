@@ -26,7 +26,7 @@ struct SwipeScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             card
-            if Platform.desktopStyle { favoritesLegend }
+            favoritesLegend
             controls
         }
         .environment(\.colorScheme, Platform.desktopStyle ? .dark : colorScheme)
@@ -144,29 +144,37 @@ struct SwipeScreen: View {
     }
 
     /// List of numbered albums. Pressing the number key saves straight to that album.
+    /// Numbered albums: tap one to save the photo there (touch equivalent of the number keys).
+    /// iPhone shows the row only when at least one number is assigned.
+    @ViewBuilder
     private var favoritesLegend: some View {
         let entries = AlbumLibrary.slotKeys.compactMap { digit in
             session.albums.slotTitles[digit].map { (digit: digit, title: $0) }
         }
-        return ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(entries, id: \.digit) { entry in
-                    HStack(spacing: 6) {
-                        Text(entry.digit)
-                            .font(.caption.weight(.bold).monospacedDigit())
-                            .frame(width: 18, height: 18)
-                            .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
-                        Text(entry.title).lineLimit(1)
+        if Platform.desktopStyle || !entries.isEmpty {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(entries, id: \.digit) { entry in
+                        Button { quickAdd(entry.digit) } label: {
+                            HStack(spacing: 6) {
+                                Text(entry.digit)
+                                    .font(.caption.weight(.bold).monospacedDigit())
+                                    .frame(width: 18, height: 18)
+                                    .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
+                                Text(entry.title).lineLimit(1)
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(.thinMaterial, in: Capsule())
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(.thinMaterial, in: Capsule())
                 }
+                .font(.footnote)
+                .padding(.horizontal, 16)
             }
-            .font(.footnote)
-            .padding(.horizontal, 16)
+            .frame(height: 34)
         }
-        .frame(height: 34)
     }
 
     @ViewBuilder
@@ -188,6 +196,10 @@ struct SwipeScreen: View {
         HStack {
             Button { session.previous() } label: { Image(systemName: "chevron.left") }
                 .disabled(!session.canGoBack)
+            // Touch equivalent of Cmd+Z / shake.
+            Button { performUndo() } label: { Image(systemName: "arrow.uturn.backward") }
+                .accessibilityLabel("Undo")
+                .padding(.leading, 12)
             Spacer()
             Text("\(min(session.index + 1, session.count)) / \(session.count)")
                 .font(.footnote.monospacedDigit())

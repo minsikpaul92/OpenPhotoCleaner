@@ -49,6 +49,8 @@ struct AlbumPickerSheet: View {
                 }
                 .focusable()
                 .focused($focused)
+                // While the new-album text field is open the grid must not take keys: letters, digits and Delete belong to the text.
+                .focusable(!showNewAlbum)
                 .focusEffectDisabled()
                 .onKeyPress(.leftArrow) { move(-1); return .handled }
                 .onKeyPress(.rightArrow) { move(1); return .handled }
@@ -113,7 +115,7 @@ struct AlbumPickerSheet: View {
             reload()
             focused = true
         }
-        .onChange(of: showNewAlbum) { focused = true }
+        .onChange(of: showNewAlbum) { focused = !showNewAlbum }
     }
 
     /// Bottom button bar for Mac and iPad: key legend plus sort, delete album, new album and close buttons.
@@ -182,6 +184,15 @@ struct AlbumPickerSheet: View {
             pick(album)
         }
         .contextMenu {
+            // Touch equivalent of pressing a number key on the tile. The same number again clears it.
+            Menu("Number") {
+                ForEach(AlbumLibrary.slotKeys, id: \.self) { digit in
+                    Button(digit) { Task { await assignSlot(digit, to: album) } }
+                }
+            }
+            if let slot {
+                Button("Clear Number") { Task { await assignSlot(slot, to: album) } }
+            }
             if !album.isPlaceholder {
                 Button("Delete Album", role: .destructive) { deleteAlbum(album) }
             }
