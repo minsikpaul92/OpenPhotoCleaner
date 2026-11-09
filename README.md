@@ -34,7 +34,8 @@ menus), and every action is in the menu bar on Mac and iPad.
   photo can be in several albums. Tap an album chip on the photo (or press its number
   key again) to take it out of that album.
 - **Rotation and favorites are normal Photos edits.** Rotation keeps the original
-  (use *Revert* in Photos to undo it); it works for still photos, not Live Photos or video.
+  (use *Revert* in Photos to undo it; on a photo you already edited in Photos, Revert also removes that earlier edit);
+  it works for still photos, not Live Photos or video.
 - **Resumes where you stopped**, in the card view or in the grid, at the first photo you have not checked yet.
 - **Green checks** in the grid mark photos you kept or added to an album. Pull down in the grid to pick up newly added photos.
 - **Mac and iPad share one layout** (black photo background, key hints, numbered-album

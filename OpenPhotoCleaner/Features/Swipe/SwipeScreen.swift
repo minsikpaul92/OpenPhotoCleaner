@@ -232,7 +232,6 @@ struct SwipeScreen: View {
         .allowsHitTesting(false)
     }
 
-    // Temporary previous button. To be replaced by undo.
     private var controls: some View {
         HStack {
             // Every icon button has a 44 pt hit region and a VoiceOver label.
@@ -294,7 +293,6 @@ struct SwipeScreen: View {
         PhotoLoader.shared.prefetch(session.items, around: session.index)
     }
 
-    /// Undo from ⌘Z (Mac menu) or a shake (iPhone). Ignored while a sheet or animation is up.
     private func iconButton(_ symbol: String, _ label: LocalizedStringKey, enabled: Bool = true, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol).frame(minWidth: 44, minHeight: 44)
@@ -329,6 +327,7 @@ struct SwipeScreen: View {
         }
     }
 
+    /// Undo from ⌘Z (Mac menu) or a shake (iPhone). Ignored while a sheet or animation is up.
     private func performUndo() {
         guard albumPicker == nil, !isAnimating else { return }
         Task { showToast(await session.undo() ?? String(localized: "Nothing to undo")) }

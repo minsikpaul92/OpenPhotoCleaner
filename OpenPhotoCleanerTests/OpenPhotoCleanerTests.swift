@@ -89,6 +89,31 @@ struct StoredStateTests {
         #expect(AlbumLibrary(defaults: defaults).sortsByName)
     }
 
+    @Test func reviewedChecksFollowKeepAndAlbumAndSurviveRestart() {
+        let defaults = makeDefaults()
+        let store = ReviewedStore(defaults: defaults)
+        store.setKept("a", true)
+        store.setAlbumed("a", true)
+        store.setAlbumed("b", true)
+        store.setKept("a", false)            // undo of keep: still checked through the album
+        #expect(store.isChecked("a") && store.isChecked("b") && !store.isChecked("c"))
+        store.setAlbumed("a", false)         // removed from its last album
+        #expect(!store.isChecked("a"))
+        store.flush()
+        let reopened = ReviewedStore(defaults: defaults)
+        #expect(reopened.isChecked("b") && !reopened.isChecked("a"))
+    }
+
+    @Test func reviewedPruneDropsMissingPhotosButNeverWipesOnAnEmptyList() {
+        let store = ReviewedStore(defaults: makeDefaults())
+        store.setKept("a", true)
+        store.setKept("gone", true)
+        store.prune(keeping: [])
+        #expect(store.isChecked("gone"))
+        store.prune(keeping: ["a"])
+        #expect(store.isChecked("a") && !store.isChecked("gone"))
+    }
+
     @Test func deletionQueueLoadsStoredIdentifiers() {
         let defaults = makeDefaults()
         defaults.set(["id1", "id2", "id3"], forKey: "deletionQueue.ids")

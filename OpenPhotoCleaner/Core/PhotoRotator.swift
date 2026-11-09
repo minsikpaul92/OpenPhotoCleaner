@@ -21,7 +21,8 @@ extension PHAsset {
 
 /// Rotates a still photo by 90° as a normal Photos edit (the original is kept; "Revert" in Photos undoes it).
 enum PhotoRotator {
-    static func rotate(_ asset: PHAsset, clockwise: Bool) async throws {
+    // nonisolated: the render is heavy and must not run on the main thread.
+    nonisolated static func rotate(_ asset: PHAsset, clockwise: Bool) async throws {
         guard asset.mediaType == .image, !asset.mediaSubtypes.contains(.photoLive) else { throw RotateError.unsupported }
 
         let input: PHContentEditingInput = try await withCheckedThrowingContinuation { continuation in

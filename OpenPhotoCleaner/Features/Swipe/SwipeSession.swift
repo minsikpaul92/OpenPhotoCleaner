@@ -18,21 +18,17 @@ final class SwipeSession {
     private(set) var albumsVersion = 0
     /// Last error to show in an alert.
     var lastError: String?
-    /// Photos kept, or added to an album, through the app. Shown with a green check in the grid. App-local, per device.
-    private(set) var keptIDs = Set(UserDefaults.standard.stringArray(forKey: "review.kept") ?? []) {
-        didSet { UserDefaults.standard.set(Array(keptIDs), forKey: "review.kept") }
-    }
-    private(set) var albumedIDs = Set(UserDefaults.standard.stringArray(forKey: "review.albumed") ?? []) {
-        didSet { UserDefaults.standard.set(Array(albumedIDs), forKey: "review.albumed") }
-    }
+    /// Photos kept, or added to an album, through the app. Shown with a green check.
+    let reviewed = ReviewedStore()
 
-    func isChecked(_ asset: PHAsset) -> Bool {
-        keptIDs.contains(asset.localIdentifier) || albumedIDs.contains(asset.localIdentifier)
-    }
+    func isChecked(_ asset: PHAsset) -> Bool { reviewed.isChecked(asset.localIdentifier) }
 
     init(library: PhotoLibrary) {
         self.library = library
         queue.prune()
+        var existing = Set<String>()
+        library.assets.enumerateObjects { asset, _, _ in existing.insert(asset.localIdentifier) }
+        reviewed.prune(keeping: existing)
         items = buildItems()
         index = store.resumeIndex(in: items)
         // Resume at the first photo not yet checked.
@@ -58,7 +54,7 @@ final class SwipeSession {
     func keep() {
         guard let current else { return }
         record(.kept(current))
-        keptIDs.insert(current.localIdentifier)
+        reviewed.setKept(current.localIdentifier, true)
         advance()
     }
 
@@ -95,7 +91,7 @@ final class SwipeSession {
         while let action = undoStack.popLast() {
             switch action {
             case .kept(let asset):
-                keptIDs.remove(asset.localIdentifier)
+                reviewed.setKept(asset.localIdentifier, false)
                 guard show(asset) else { continue }
                 return String(localized: "Undid keep")
             case .trashed(let asset):
@@ -222,6 +218,10 @@ final class SwipeSession {
     func deleteQueued(_ assets: [PHAsset]) async -> DeleteResult {
         do {
             try await queue.delete(assets)
+            // The fetched list still holds the deleted photos; reload it so a later rebuild does not bring them back.
+            library.reload()
+            items = buildItems()
+            index = min(index, count)
             return .deleted
         } catch {
             if (error as? PHPhotosError)?.code == .userCancelled { return .cancelled }
@@ -282,7 +282,7 @@ final class SwipeSession {
     }
 
     private func uncheckIfNoAlbum(_ asset: PHAsset) {
-        if albums.albums(containing: asset).isEmpty { albumedIDs.remove(asset.localIdentifier) }
+        if albums.albums(containing: asset).isEmpty { reviewed.setAlbumed(asset.localIdentifier, false) }
     }
 
     /// Clears the target album.
@@ -332,6 +332,7 @@ final class SwipeSession {
     func reload() {
         let currentID = current?.localIdentifier
         library.reload()
+        albums.refreshSlots()
         items = buildItems()
         if let currentID, let newIndex = items.firstIndex(where: { $0.localIdentifier == currentID }) {
             index = newIndex
@@ -377,7 +378,7 @@ final class SwipeSession {
     private func add(_ asset: PHAsset, to album: Album) async {
         do {
             try await albums.add(asset, to: album)
-            albumedIDs.insert(asset.localIdentifier)
+            reviewed.setAlbumed(asset.localIdentifier, true)
             albumsVersion += 1
         } catch {
             lastError = String(localized: "Couldn't add to \(album.title). \(error.localizedDescription)")

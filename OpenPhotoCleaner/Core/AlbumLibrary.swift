@@ -205,7 +205,7 @@ final class AlbumLibrary {
     }
 
     /// Reflects albums that were deleted or renamed in the Photos app.
-    private func refreshSlots() {
+    func refreshSlots() {
         guard !slotIDs.isEmpty else { return }
         var titles: [String: String] = [:]
         PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: Array(slotIDs.values), options: nil)

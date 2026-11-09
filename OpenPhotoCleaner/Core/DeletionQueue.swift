@@ -66,7 +66,7 @@ final class DeletionQueue {
     }
 
     /// Size of one photo in bytes. Reads the undocumented `fileSize` key, so a missing value counts as 0.
-    static func byteSize(of asset: PHAsset) -> Int64 {
+    nonisolated static func byteSize(of asset: PHAsset) -> Int64 {
         PHAssetResource.assetResources(for: asset).reduce(0) { total, resource in
             total + ((resource.value(forKey: "fileSize") as? NSNumber)?.int64Value ?? 0)
         }

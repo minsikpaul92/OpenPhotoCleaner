@@ -10,7 +10,7 @@ struct QueueSheet: View {
     let session: SwipeSession
     @Environment(\.dismiss) private var dismiss
     @State private var assets: [PHAsset] = []
-    @State private var totalBytes: Int64 = 0
+    @State private var totalBytes: Int64?
     @State private var selecting = false
     @State private var selected: Set<String> = []
     @State private var focusedID: String?
@@ -103,7 +103,8 @@ struct QueueSheet: View {
     private var summary: String {
         isSelecting
             ? String(localized: "\(selected.count) selected")
-            : String(localized: "\(assets.count) photos · \(totalBytes.formatted(.byteCount(style: .file)))")
+            : totalBytes.map { String(localized: "\(assets.count) photos · \($0.formatted(.byteCount(style: .file)))") }
+                ?? String(localized: "\(assets.count) photos")
     }
 
     private var actionBar: some View {
@@ -210,7 +211,13 @@ struct QueueSheet: View {
     /// Reloads the list and total size. Drops vanished photos from the selection and focus, and closes when empty.
     private func refresh() {
         assets = session.queue.assets()
-        totalBytes = assets.reduce(0) { $0 + DeletionQueue.byteSize(of: $1) }
+        // Sizes come from PhotoKit one photo at a time, so add them up off the main thread.
+        totalBytes = nil
+        let snapshot = assets
+        Task {
+            let total = await Task.detached { snapshot.reduce(0) { $0 + DeletionQueue.byteSize(of: $1) } }.value
+            if assets.map(\.localIdentifier) == snapshot.map(\.localIdentifier) { totalBytes = total }
+        }
         let remaining = Set(assets.map(\.localIdentifier))
         selected = selected.intersection(remaining)
         if let focusedID, !remaining.contains(focusedID) { self.focusedID = nil }

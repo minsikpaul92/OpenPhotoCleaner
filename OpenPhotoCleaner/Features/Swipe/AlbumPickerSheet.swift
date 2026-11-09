@@ -112,6 +112,7 @@ struct AlbumPickerSheet: View {
         .frame(minWidth: 560, minHeight: 480)
         #endif
         .onAppear {
+            session.albums.refreshSlots()
             reload()
             focused = true
         }
