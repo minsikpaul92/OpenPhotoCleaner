@@ -1,64 +1,66 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "%@ · Added to %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · %@에 추가"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ · Added to %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@에 추가"
           }
         }
       }
     },
-    "%@ · Removed from %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · %@에서 뺐습니다"
+    "%@ · Removed from %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@에서 뺐습니다"
           }
         }
       }
     },
-    "%lld": {},
-    "%lld / %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": "%1$lld / %2$lld"
+    "%lld" : {
+
+    },
+    "%lld / %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld / %2$lld"
           }
         }
       }
     },
-    "%lld photos · %@": {
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$lld photo · %2$@"
+    "%lld photos · %@" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld photo · %2$@"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$lld photos · %2$@"
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld photos · %2$@"
                 }
               }
             }
           }
         },
-        "ko": {
-          "variations": {
-            "plural": {
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$lld장 · %2$@"
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld장 · %2$@"
                 }
               }
             }
@@ -66,1113 +68,1156 @@
         }
       }
     },
-    "%lld selected": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld장 선택됨"
+    "%lld selected" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld장 선택됨"
           }
         }
       }
     },
-    "← → ↑ ↓ Move  ·  Enter Select  ·  1–0 Number  ·  + New Album  ·  ⌫ Delete  ·  S Sort  ·  Esc Close": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "← → ↑ ↓ 이동  ·  Enter 선택  ·  1~0 번호  ·  + 새 앨범  ·  ⌫ 삭제  ·  S 정렬  ·  Esc 닫기"
+    "← / ⌫" : {
+
+    },
+    "← → ↑ ↓" : {
+
+    },
+    "← → ↑ ↓ Move  ·  Enter Select  ·  1–0 Number  ·  + New Album  ·  ⌫ Delete  ·  S Sort  ·  Esc Close" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "← → ↑ ↓ 이동  ·  Enter 선택  ·  1~0 번호  ·  + 새 앨범  ·  ⌫ 삭제  ·  S 정렬  ·  Esc 닫기"
           }
         }
       }
+    },
+    "→ / ↩" : {
+
+    },
+    "↑" : {
+
+    },
+    "↓ / Esc" : {
+
+    },
+    "↩" : {
+
+    },
+    "+" : {
+
+    },
+    "+%lld" : {
+
     },
-    "+%lld": {},
-    "⌘ Z": {},
-    "⌫ / ↩": {},
-    "1 ~ 0": {},
-    "A": {},
-    "About": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "정보"
+    "⌘ Z" : {
+
+    },
+    "⌫" : {
+
+    },
+    "1 ~ 0" : {
+
+    },
+    "A" : {
+
+    },
+    "About" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정보"
           }
         }
       }
     },
-    "Add to %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@에 추가"
+    "Add a new album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 앨범 추가"
           }
         }
       }
     },
-    "Added back to %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@에 다시 추가했습니다"
+    "Add to %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에 추가"
           }
         }
       }
     },
-    "Added to Favorites": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "즐겨찾기에 추가했습니다"
+    "Added back to %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에 다시 추가했습니다"
           }
         }
       }
     },
-    "Album Button": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 단추"
+    "Added to Favorites" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "즐겨찾기에 추가했습니다"
           }
         }
       }
     },
-    "Album name": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 이름"
+    "Album Button" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 단추"
           }
         }
       }
     },
-    "Album not found.": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범을 찾을 수 없습니다."
+    "Album name" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 이름"
           }
         }
       }
     },
-    "All Reviewed": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "모두 확인했습니다"
+    "Album not found." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범을 찾을 수 없습니다."
           }
         }
       }
     },
-    "Allow Access": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "접근 허용"
+    "All Reviewed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모두 확인했습니다"
           }
         }
       }
     },
-    "Allow access to \"All Photos\" in Settings.": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "설정에서 사진 보관함 접근을 '모든 사진'으로 허용해 주세요."
+    "Allow Access" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "접근 허용"
           }
         }
       }
     },
-    "Back to Grid": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "목록으로"
+    "Allow access to \"All Photos\" in Settings." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 사진 보관함 접근을 '모든 사진'으로 허용해 주세요."
           }
         }
       }
     },
-    "Back to the grid": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "목록(그리드)으로"
+    "Back to Grid" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록으로"
           }
         }
       }
     },
-    "By Name": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이름순"
+    "Back to the grid" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록(그리드)으로"
           }
         }
       }
     },
-    "By touch: swipe right to Delete, left to Keep": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "터치: 오른쪽으로 밀면 삭제, 왼쪽으로 밀면 유지"
+    "By Name" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이름순"
           }
         }
       }
     },
-    "Cancel": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "취소"
+    "By touch: swipe right to Delete, left to Keep" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "터치: 오른쪽으로 밀면 삭제, 왼쪽으로 밀면 유지"
           }
         }
       }
     },
-    "Choose Album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 선택"
+    "Cancel" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소"
           }
         }
       }
     },
-    "Clear Number": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "번호 해제"
+    "Choose Album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 선택"
           }
         }
       }
     },
-    "Close": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "닫기"
+    "Choose the album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 선택"
           }
         }
       }
     },
-    "Couldn't add to %@. %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@에 추가하지 못했습니다. %@"
+    "Clear Number" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "번호 해제"
           }
         }
       }
     },
-    "Couldn't change the favorite. %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "즐겨찾기를 바꾸지 못했습니다. %@"
+    "Clear the selection, or close (queue)" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택 해제, 비어 있으면 닫기 (대기열)"
           }
         }
       }
     },
-    "Couldn't create the album. %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범을 만들지 못했습니다. %@"
+    "Close" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "닫기"
           }
         }
       }
     },
-    "Couldn't delete the album. %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범을 삭제하지 못했습니다. %@"
+    "Couldn't add to %@. %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에 추가하지 못했습니다. %@"
           }
         }
       }
     },
-    "Couldn't delete. %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제하지 못했습니다. %@"
+    "Couldn't change the favorite. %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "즐겨찾기를 바꾸지 못했습니다. %@"
           }
         }
       }
     },
-    "Couldn't Finish": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "완료하지 못했습니다"
+    "Couldn't create the album. %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범을 만들지 못했습니다. %@"
           }
         }
       }
     },
-    "Couldn't remove from %@. %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@에서 빼지 못했습니다. %@"
+    "Couldn't delete the album. %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범을 삭제하지 못했습니다. %@"
           }
         }
       }
     },
-    "Couldn't rotate. %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "회전하지 못했습니다. %@"
+    "Couldn't delete. %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제하지 못했습니다. %@"
           }
         }
       }
     },
-    "Create": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "만들기"
+    "Couldn't Finish" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료하지 못했습니다"
           }
         }
       }
     },
-    "Delete": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제"
+    "Couldn't remove from %@. %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에서 빼지 못했습니다. %@"
           }
         }
       }
     },
-    "Delete / Keep, same as ← / →": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제 / 유지 (← / →와 같음)"
+    "Couldn't rotate. %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회전하지 못했습니다. %@"
           }
         }
       }
     },
-    "Delete Album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 삭제"
+    "Create" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "만들기"
           }
         }
       }
     },
-    "Delete All": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "전체삭제"
+    "Delete" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제"
           }
         }
       }
     },
-    "Delete Queue": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제 대기"
+    "Delete / Keep, same as ← / →" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 / 유지 (← / →와 같음)"
           }
         }
       }
     },
-    "Delete Queue (%lld)": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제 대기(%lld개)"
+    "Delete Album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 삭제"
           }
         }
       }
     },
-    "Delete Selected": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "선택삭제"
+    "Delete All" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체삭제"
           }
         }
       }
     },
-    "Done": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "완료"
+    "Delete Queue" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 대기"
           }
         }
       }
     },
-    "Esc": {},
-    "Favorite": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "즐겨찾기"
+    "Delete Queue (%lld)" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 대기(%lld개)"
           }
         }
       }
     },
-    "Get Started": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "시작하기"
+    "Delete Selected" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택삭제"
           }
         }
       }
     },
-    "GitHub": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GitHub"
+    "Delete the album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 삭제"
           }
         }
       }
     },
-    "How to Sort Photos": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진 정리하는 법"
+    "Delete the selected photos (queue)" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 사진 삭제 (대기열)"
           }
         }
       }
     },
-    "If photos are waiting in the delete queue, you can delete them all at once or leave them in the queue to decide later": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제 대기열에 사진이 있으면 한꺼번에 삭제하거나, 나중에 정하도록 대기열에 그대로 둘 수 있습니다"
+    "Done" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
           }
         }
       }
     },
-    "If you like it, please give it a star on GitHub.": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "마음에 드셨다면 GitHub에서 스타를 한 번씩 눌러 주세요."
+    "Esc" : {
+
+    },
+    "Favorite" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "즐겨찾기"
           }
         }
       }
     },
-    "Keep": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "유지"
+    "Get Started" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작하기"
           }
         }
       }
     },
-    "Leave it as is and go to the next photo": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "그대로 두고 다음 사진으로"
+    "GitHub" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
           }
         }
       }
     },
-    "LinkedIn": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "LinkedIn"
+    "Give the album that number" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범에 그 번호 지정"
           }
         }
       }
     },
-    "Made to tidy up a pile of photos simply and quickly. Enjoy!": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "쌓여 있는 사진첩을 간단하고 빠르게 정리하기 위해 만들었습니다. 편하게 이용해 주세요."
+    "How to Sort Photos" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 정리하는 법"
           }
         }
       }
     },
-    "Moves it to the delete queue and hides it from the list": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제 대기열에 넣고 목록에서 숨깁니다"
+    "If photos are waiting in the delete queue, you can delete them all at once or leave them in the queue to decide later" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 대기열에 사진이 있으면 한꺼번에 삭제하거나, 나중에 정하도록 대기열에 그대로 둘 수 있습니다"
           }
         }
       }
     },
-    "New Album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "새 앨범"
+    "If you like it, please give it a star on GitHub." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마음에 드셨다면 GitHub에서 스타를 한 번씩 눌러 주세요."
           }
         }
       }
     },
-    "Next": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "다음"
+    "Keep" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유지"
           }
         }
       }
     },
-    "No album assigned to %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@번 앨범이 지정되지 않았습니다"
+    "Keys in the album picker" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 선택창 단축키"
           }
         }
       }
     },
-    "No Photos": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진이 없습니다"
+    "Keys in the grid and delete queue" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그리드와 삭제 대기열 단축키"
           }
         }
       }
     },
-    "Nothing to undo": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "취소할 동작이 없습니다"
+    "Keys on the photo" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 화면 단축키"
           }
         }
       }
     },
-    "Number": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "번호"
+    "Leave it as is and go to the next photo" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그대로 두고 다음 사진으로"
           }
         }
       }
     },
-    "OK": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "확인"
+    "LinkedIn" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LinkedIn"
           }
         }
       }
     },
-    "Only still photos can be rotated.": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "일반 사진만 회전할 수 있습니다."
+    "Made to tidy up a pile of photos simply and quickly. Enjoy!" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "쌓여 있는 사진첩을 간단하고 빠르게 정리하기 위해 만들었습니다. 편하게 이용해 주세요."
           }
         }
       }
     },
-    "Open the album picker": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 선택창 열기"
+    "Move the dashed frame" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "점선 칸 이동"
           }
         }
       }
     },
-    "OpenPhotoCleaner": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenPhotoCleaner"
+    "Move, then ↩ to open (grid) or select (queue)" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이동한 뒤 ↩ 로 열기(그리드) 또는 선택(대기열)"
           }
         }
       }
     },
-    "Pending Share": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "공유 대기"
+    "Moves it to the delete queue and hides it from the list" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 대기열에 넣고 목록에서 숨깁니다"
           }
         }
       }
     },
-    "Photo": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진"
+    "New Album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 앨범"
           }
         }
       }
     },
-    "Photo %lld of %lld": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진 %lld / %lld"
+    "Next" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음"
           }
         }
       }
     },
-    "Photo Access Needed": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진 접근 필요"
+    "No album assigned to %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@번 앨범이 지정되지 않았습니다"
           }
         }
       }
     },
-    "Photos": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진"
+    "No Photos" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진이 없습니다"
           }
         }
       }
     },
-    "Previous Photo": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이전 사진"
+    "Nothing to undo" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소할 동작이 없습니다"
           }
         }
       }
     },
-    "R": {},
-    "Recently Used": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "최근 사용순"
+    "Number" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "번호"
           }
         }
       }
     },
-    "Remove from %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@에서 빼기"
+    "OK" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인"
           }
         }
       }
     },
-    "Removed from %@": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@에서 뺐습니다"
+    "Only still photos can be rotated." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일반 사진만 회전할 수 있습니다."
           }
         }
       }
     },
-    "Removed from Favorites": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "즐겨찾기에서 뺐습니다"
+    "Open the album picker" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 선택창 열기"
           }
         }
       }
     },
-    "Restore All": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "전체복원"
+    "OpenPhotoCleaner" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenPhotoCleaner"
           }
         }
       }
     },
-    "Restore Selected": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "선택복원"
+    "Pending Share" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공유 대기"
           }
         }
       }
     },
-    "Restored from the delete queue": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제 대기열에서 되돌렸습니다"
+    "Photo" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진"
           }
         }
       }
     },
-    "Return to the photo grid": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "목록(그리드)으로 돌아갑니다"
+    "Photo %lld of %lld" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 %lld / %lld"
           }
         }
       }
     },
-    "Reviewed": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "확인함"
+    "Photo Access Needed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 접근 필요"
           }
         }
       }
     },
-    "Rotate": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "회전"
+    "Photos" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진"
           }
         }
       }
     },
-    "Rotate 90°": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "90° 회전"
+    "Previous Photo" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 사진"
           }
         }
       }
+    },
+    "R" : {
+
     },
-    "Rotate Clockwise": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "시계 방향으로 회전"
+    "Recently Used" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 사용순"
           }
         }
       }
     },
-    "Rotated": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "회전했습니다"
+    "Remove from %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에서 빼기"
           }
         }
       }
     },
-    "Save to Album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 저장"
+    "Removed from %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에서 뺐습니다"
           }
         }
       }
     },
-    "Save to the album with that number": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "번호를 지정한 앨범에 바로 저장"
+    "Removed from Favorites" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "즐겨찾기에서 뺐습니다"
           }
         }
       }
     },
-    "Saves to the chosen album right away (asks for one if none is chosen)": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "선택한 앨범에 바로 저장 (없으면 앨범 선택)"
+    "Restore All" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체복원"
           }
         }
       }
     },
-    "Select": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "선택"
+    "Restore Selected" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택복원"
           }
         }
       }
     },
-    "Shake": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "흔들기"
+    "Restored from the delete queue" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 대기열에서 되돌렸습니다"
           }
         }
       }
     },
-    "Show Grid": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "전체 보기"
+    "Return to the photo grid" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록(그리드)으로 돌아갑니다"
           }
         }
       }
     },
-    "Star on GitHub": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GitHub에서 스타 누르기"
+    "Reviewed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인함"
           }
         }
       }
     },
-    "Tap the album name above the photo to choose an album, sort (recent or by name) and add a new one. Press and hold an album to delete it.": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진 위의 앨범 이름을 누르면 앨범 선택, 정렬(최신순/이름순), 새 앨범 추가를 할 수 있습니다. 앨범을 꾹 누르면 삭제할 수 있습니다."
+    "Rotate" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회전"
           }
         }
       }
     },
-    "Target Album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "대상 앨범 변경"
+    "Rotate 90°" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "90° 회전"
           }
         }
       }
     },
-    "The delete queue is empty": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "삭제 대기열이 비었습니다"
+    "Rotate Clockwise" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시계 방향으로 회전"
           }
         }
       }
     },
-    "The photo could not be read.": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진을 읽을 수 없습니다."
+    "Rotated" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회전했습니다"
           }
         }
       }
     },
-    "This only creates the album; it will not be set as the target.": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "만들기만 하고, 대상 앨범으로 고르지는 않습니다."
+    "S" : {
+
+    },
+    "Save to Album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앨범 저장"
           }
         }
       }
     },
-    "Undid add": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "추가를 취소했습니다"
+    "Save to the album with that number" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "번호를 지정한 앨범에 바로 저장"
           }
         }
       }
     },
-    "Undid favorite": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "즐겨찾기를 취소했습니다"
+    "Save to the album with that number (again to take it out)" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "해당 번호 앨범에 저장 (같은 키를 다시 누르면 앨범에서 뺌)"
           }
         }
       }
     },
-    "Undid keep": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "유지를 취소했습니다"
+    "Save to the chosen album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 앨범에 저장"
           }
         }
       }
     },
-    "Undid rotate": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "회전을 취소했습니다"
+    "Saves to the chosen album right away (asks for one if none is chosen)" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 앨범에 바로 저장 (없으면 앨범 선택)"
           }
         }
       }
     },
-    "Undo": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "실행 취소"
+    "Select" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택"
           }
         }
       }
     },
-    "Undo the last action": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "마지막 동작 취소"
+    "Shake" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "흔들기"
           }
         }
       }
     },
-    "Untitled": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이름 없음"
+    "Show Grid" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 보기"
           }
         }
       }
     },
-    "Keys on the photo": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진 화면 단축키"
+    "Sort by recent or by name" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최신순 / 이름순 정렬"
           }
         }
       }
+    },
+    "Space" : {
+
     },
-    "Keys in the album picker": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 선택창 단축키"
+    "Star on GitHub" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub에서 스타 누르기"
           }
         }
       }
     },
-    "Keys in the grid and delete queue": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "그리드와 삭제 대기열 단축키"
+    "Tap the album name above the photo to choose an album, sort (recent or by name) and add a new one. Press and hold an album to delete it." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 위의 앨범 이름을 누르면 앨범 선택, 정렬(최신순/이름순), 새 앨범 추가를 할 수 있습니다. 앨범을 꾹 누르면 삭제할 수 있습니다."
           }
         }
       }
     },
-    "Save to the album with that number (again to take it out)": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "해당 번호 앨범에 저장 (같은 키를 다시 누르면 앨범에서 뺌)"
+    "Target Album" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대상 앨범 변경"
           }
         }
       }
     },
-    "Move the dashed frame": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "점선 칸 이동"
+    "The delete queue is empty" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 대기열이 비었습니다"
           }
         }
       }
     },
-    "Choose the album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 선택"
+    "The photo could not be read." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 읽을 수 없습니다."
           }
         }
       }
     },
-    "Add a new album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "새 앨범 추가"
+    "This only creates the album; it will not be set as the target." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "만들기만 하고, 대상 앨범으로 고르지는 않습니다."
           }
         }
       }
     },
-    "Delete the album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범 삭제"
+    "Undid add" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추가를 취소했습니다"
           }
         }
       }
     },
-    "Sort by recent or by name": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "최신순 / 이름순 정렬"
+    "Undid favorite" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "즐겨찾기를 취소했습니다"
           }
         }
       }
     },
-    "Give the album that number": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범에 그 번호 지정"
+    "Undid keep" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유지를 취소했습니다"
           }
         }
       }
     },
-    "Move, then ↩ to open (grid) or select (queue)": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이동한 뒤 ↩ 로 열기(그리드) 또는 선택(대기열)"
+    "Undid rotate" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회전을 취소했습니다"
           }
         }
       }
     },
-    "Delete the selected photos (queue)": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "선택한 사진 삭제 (대기열)"
+    "Undo" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행 취소"
           }
         }
       }
     },
-    "Clear the selection, or close (queue)": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "선택 해제, 비어 있으면 닫기 (대기열)"
+    "Undo the last action" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막 동작 취소"
           }
         }
       }
     },
-    "Save to the chosen album": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "선택한 앨범에 저장"
+    "Untitled" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이름 없음"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

@@ -122,13 +122,17 @@ struct LargeAssetImage: View {
 
     private struct Loaded {
         let id: String
+        let assetID: String
         let image: Image
     }
 
-    /// Image of the current photo. Never shows the previous photo's image.
+    /// Image of the current photo. Never shows another photo's image; after an edit or a favorite toggle
+    /// the same photo's old image stays up until the new one arrives, so there is no blank frame.
     private var shown: Image? {
         if let loaded, loaded.id == asset.cacheKey { return loaded.image }
-        return PhotoLoader.shared.cachedImage(for: asset)
+        if let cached = PhotoLoader.shared.cachedImage(for: asset) { return cached }
+        if let loaded, loaded.assetID == asset.localIdentifier { return loaded.image }
+        return nil
     }
 
     var body: some View {
@@ -149,7 +153,7 @@ struct LargeAssetImage: View {
         guard loaded?.id != id, PhotoLoader.shared.cachedImage(for: asset) == nil else { return }
         requestID = PhotoLoader.shared.manager.requestImage(for: asset, targetSize: PhotoLoader.largeSize, contentMode: .aspectFit, options: PhotoLoader.largeOptions) { platformImage, _ in
             guard currentID == id, let platformImage else { return }
-            loaded = Loaded(id: id, image: Image(platform: platformImage))
+            loaded = Loaded(id: id, assetID: asset.localIdentifier, image: Image(platform: platformImage))
         }
     }
 

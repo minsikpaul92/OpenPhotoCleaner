@@ -42,8 +42,19 @@ struct PhotoGridView: View {
                         .disabled(session.queue.count == 0)
                 }
                 ToolbarItem(placement: infoPlacement) {
+                    #if os(macOS)
+                    // While the photo window is open the toolbar's button explains the controls instead.
+                    if isActive {
+                        Button { showInfo = true } label: { Image(systemName: "info.circle") }
+                            .accessibilityLabel("About")
+                    } else {
+                        Button { NotificationCenter.default.post(name: .showTutorial, object: nil) } label: { Image(systemName: "questionmark.circle") }
+                            .accessibilityLabel("How to Sort Photos")
+                    }
+                    #else
                     Button { showInfo = true } label: { Image(systemName: "info.circle") }
                         .accessibilityLabel("About")
+                    #endif
                 }
             }
         }

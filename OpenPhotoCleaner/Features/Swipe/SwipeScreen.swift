@@ -34,6 +34,8 @@ struct SwipeScreen: View {
         .background(Platform.desktopStyle ? Color.black : Color.platformBackground)
         .overlay { toastView }
         // The guide describes this screen, so its button lives here (Mac and iPad also have Help > How to Sort Photos).
+        // On Mac the window toolbar stays visible above the photo, and its info button turns into this ? (see PhotoGridView).
+        #if !os(macOS)
         .overlay(alignment: .topTrailing) {
             Button {
                 NotificationCenter.default.post(name: .showTutorial, object: nil)
@@ -45,6 +47,7 @@ struct SwipeScreen: View {
             .accessibilityLabel("How to Sort Photos")
             .opacity(drag == .zero ? 1 : 0)
         }
+        #endif
         .onReceive(NotificationCenter.default.publisher(for: .undoRequested)) { _ in performUndo() }
         .focusable()
         .focused($focused)
@@ -102,6 +105,15 @@ struct SwipeScreen: View {
                     // The photo lets touches through (the swipe area below receives them); only the album chips are tappable.
                     LargeAssetImage(asset: asset)
                         .allowsHitTesting(false)
+                        .overlay(alignment: .topTrailing) {
+                            if session.isChecked(asset) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(.white, .green)
+                                    .padding(10)
+                                    .accessibilityLabel("Reviewed")
+                            }
+                        }
                         .overlay(alignment: .topLeading) {
                             AlbumBadges(asset: asset, session: session) { album in
                                 session.remove(asset, from: album)
