@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 처음 실행할 때 한 번 보여주는 조작 안내.
+/// Controls guide shown once on first launch.
 struct TutorialOverlay: View {
     let onDismiss: () -> Void
     @FocusState private var focused: Bool
@@ -22,6 +22,10 @@ struct TutorialOverlay: View {
                 extra("1 ~ 0", "Save to the album with that number")
                 extra("↑ ↑", "Open the album picker")
                 extra("Esc", "Back to the grid")
+                extra("⌘ Z", "Undo the last action")
+                #else
+                Divider()
+                extra("Shake", "Undo the last action")
                 #endif
                 Button("Get Started", action: onDismiss)
                     .buttonStyle(.borderedProminent)
@@ -33,7 +37,7 @@ struct TutorialOverlay: View {
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
             .padding(24)
         }
-        // 안내가 떠 있는 동안 뒤의 사진이 키 입력에 반응하지 않게 키를 모두 받는다.
+        // Swallow all keys so the photo behind does not react while the guide is shown.
         .focusable()
         .focused($focused)
         .focusEffectDisabled()
@@ -57,7 +61,7 @@ struct TutorialOverlay: View {
         }
     }
 
-    private func extra(_ keys: String, _ detail: LocalizedStringKey) -> some View {
+    private func extra(_ keys: LocalizedStringKey, _ detail: LocalizedStringKey) -> some View {
         HStack(spacing: 12) {
             Text(keys)
                 .font(.callout.weight(.semibold).monospaced())
@@ -76,12 +80,12 @@ struct TutorialOverlay: View {
     }
 }
 
-/// Mac은 방향키를 누르면 바로 끝나서 드래그 힌트가 안 보이므로, 왼쪽/오른쪽 안내를 항상 보여준다.
-/// 사진 양옆 빈 여백의 한가운데에 놓는다(사진이 화면 폭을 거의 채우면 가장자리에서 조금만 들어온다).
+/// On Mac an arrow key acts instantly so a drag hint never shows, so the left/right hints are always visible.
+/// Placed in the middle of the empty margins beside the photo (just inside the edge when the photo nearly fills the width).
 struct EdgeHints: View {
-    /// 사진을 보여주는 영역의 크기.
+    /// Size of the area showing the photo.
     let container: CGSize
-    /// 사진의 가로/세로 비율.
+    /// The photo's width / height ratio.
     let imageAspect: CGFloat
 
     var body: some View {

@@ -1,11 +1,11 @@
 import Photos
 import Observation
 
-/// 사진 앨범 하나. 앨범에 추가해도 사진이 복사되지 않고 같은 사진을 가리킨다.
+/// One photo album. Adding a photo to an album does not copy it; the album points at the same photo.
 struct Album: Identifiable, Hashable {
     let id: String
     let title: String
-    /// "공유 대기" 앨범이 아직 없을 때의 자리. 처음 쓸 때 실제로 만든다.
+    /// Stand-in for the "Pending Share" album when it does not exist yet. It is created for real on first use.
     var isPlaceholder = false
 }
 
@@ -14,13 +14,13 @@ enum AlbumError: LocalizedError {
     var errorDescription: String? { String(localized: "Album not found.") }
 }
 
-/// 앨범 목록, 앨범 만들기·삭제, 앨범에 사진 추가, 최근 사용·대상 앨범·번호 즐겨찾기 기억.
+/// Album list, creating and deleting albums, adding photos to albums, and remembering last use, the target album and number favorites.
 @Observable
 final class AlbumLibrary {
     static let pendingShareTitle = String(localized: "Pending Share")
     /// Earlier builds created the album under this Korean name; keep using it instead of making a duplicate.
     private static let legacyPendingShareTitle = "공유 대기"
-    /// 번호 즐겨찾기에 쓰는 키. 숫자키 1~9, 0.
+    /// Keys used for number favorites: number keys 1-9, 0.
     static let slotKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
     private static let placeholderID = "placeholder.pendingShare"
     private let targetKey = "albums.targetID"
@@ -30,13 +30,13 @@ final class AlbumLibrary {
     private let sortKey = "albums.sortsByName"
     private var defaults: UserDefaults { .standard }
 
-    /// 번호 → 앨범 id. 앨범 하나에는 번호 하나만 둔다.
+    /// Number to album id. An album has at most one number.
     private(set) var slotIDs: [String: String]
-    /// 번호 → 앨범 이름(화면에 바로 보여주려고 같이 저장).
+    /// Number to album title (stored too so it can be shown without a lookup).
     private(set) var slotTitles: [String: String]
-    /// 앨범 id → 마지막으로 쓴(대상으로 고르거나 사진을 넣거나 새로 만든) 시각.
+    /// Album id to the time it was last used (chosen as target, a photo added, or created).
     private(set) var lastUsed: [String: Double]
-    /// true면 이름순, false면 최근 사용순.
+    /// True for by-name order, false for recently-used order.
     private(set) var sortsByName: Bool
 
     init() {
@@ -53,7 +53,7 @@ final class AlbumLibrary {
         set { defaults.set(newValue, forKey: targetKey) }
     }
 
-    /// 최근 사용순과 이름순을 바꾼다.
+    /// Switches between recently-used and by-name order.
     func toggleSort() {
         sortsByName.toggle()
         defaults.set(sortsByName, forKey: sortKey)
@@ -64,9 +64,9 @@ final class AlbumLibrary {
             .firstObject.map(Self.makeAlbum)
     }
 
-    /// 앨범 목록. 최근 사용순이면 마지막에 쓴 앨범이 맨 앞(새로 만든 앨범도 만든 즉시 쓴 것으로 쳐서 맨 앞),
-    /// 한 번도 안 쓴 앨범은 그 뒤에 이름순. 이름순이면 전부 이름순.
-    /// 아직 만들지 않은 "공유 대기"는 한 번도 안 쓴 앨범처럼 목록에 들어간다.
+    /// Album list. In recently-used order the last used album comes first (a new album counts as used when created),
+    /// then never-used albums by name. In by-name order everything is sorted by name.
+    /// A "Pending Share" album that does not exist yet is listed like a never-used album.
     func albums() -> [Album] {
         let result = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumRegular, options: nil)
         var all: [Album] = []
@@ -86,21 +86,21 @@ final class AlbumLibrary {
         return used + unused
     }
 
-    // MARK: 번호 즐겨찾기
+    // MARK: Number favorites
 
-    /// 이 번호에 지정된 앨범.
+    /// The album assigned to this number.
     func album(forSlot digit: String) -> Album? {
         guard let id = slotIDs[digit], let title = slotTitles[digit] else { return nil }
         return Album(id: id, title: title)
     }
 
-    /// 이 앨범에 지정된 번호.
+    /// The number assigned to this album.
     func slot(of album: Album) -> String? {
         slotIDs.first { $0.value == album.id }?.key
     }
 
-    /// 번호를 지정한다. 다른 앨범이 쓰던 번호면 덮어쓰고, 이 앨범의 예전 번호는 없어진다.
-    /// 이 앨범에 같은 번호를 다시 지정하면 해제한다.
+    /// Assigns a number. Overwrites another album's use of it; this album's previous number is dropped.
+    /// Assigning the same number to this album again clears it.
     func toggleSlot(_ digit: String, for album: Album) {
         guard !album.isPlaceholder else { return }
         if slotIDs[digit] == album.id {
@@ -114,9 +114,9 @@ final class AlbumLibrary {
         saveSlots()
     }
 
-    // MARK: 앨범 만들기·삭제·추가
+    // MARK: Creating, deleting and adding to albums
 
-    /// 자리만 있던 "공유 대기"를 실제 앨범으로 바꿔 돌려준다. 이미 실제 앨범이면 그대로.
+    /// Turns the stand-in "Pending Share" into a real album and returns it. A real album is returned unchanged.
     func resolve(_ album: Album) async throws -> Album {
         guard album.isPlaceholder else { return album }
         if let existing = albums().first(where: { $0.title == album.title && !$0.isPlaceholder }) {
@@ -135,7 +135,7 @@ final class AlbumLibrary {
         return album
     }
 
-    /// 앨범만 삭제한다. 앨범 안의 사진은 보관함에 그대로 남는다.
+    /// Deletes only the album. Its photos stay in the library.
     func deleteAlbum(_ album: Album) async throws {
         guard !album.isPlaceholder,
               let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [album.id], options: nil).firstObject
@@ -150,7 +150,7 @@ final class AlbumLibrary {
         if targetID == album.id { targetID = nil }
     }
 
-    /// 앨범에 사진을 추가한다(복사가 아니라 참조). 실제 앨범으로 확정된 결과를 돌려준다.
+    /// Adds a photo to an album (a reference, not a copy). Returns the resolved real album.
     @discardableResult
     func add(_ asset: PHAsset, to album: Album) async throws -> Album {
         let resolved = try await resolve(album)
@@ -164,7 +164,7 @@ final class AlbumLibrary {
         return resolved
     }
 
-    /// 이 사진이 이미 들어 있는 앨범들.
+    /// The albums this photo is already in.
     func albums(containing asset: PHAsset) -> [Album] {
         var result: [Album] = []
         PHAssetCollection.fetchAssetCollectionsContaining(asset, with: .album, options: nil)
@@ -172,7 +172,7 @@ final class AlbumLibrary {
         return result
     }
 
-    /// 앨범에서 사진만 뺀다. 사진은 보관함에 그대로 남는다.
+    /// Removes only the photo from the album. The photo stays in the library.
     func remove(_ asset: PHAsset, from album: Album) async throws {
         guard let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [album.id], options: nil).firstObject else {
             throw AlbumError.notFound
@@ -182,14 +182,14 @@ final class AlbumLibrary {
         }
     }
 
-    /// 방금 쓴 앨범으로 기록한다. 목록에서 맨 앞으로 온다.
+    /// Records the album as just used. It moves to the front of the list.
     func recordUse(_ album: Album) {
         guard !album.isPlaceholder else { return }
         lastUsed[album.id] = Date().timeIntervalSince1970
         defaults.set(lastUsed, forKey: lastUsedKey)
     }
 
-    // MARK: 내부
+    // MARK: Internal
 
     private func removeSlots(of albumID: String) {
         for digit in slotIDs.filter({ $0.value == albumID }).keys {
@@ -203,7 +203,7 @@ final class AlbumLibrary {
         defaults.set(slotTitles, forKey: slotTitlesKey)
     }
 
-    /// 사진 앱에서 지워졌거나 이름이 바뀐 앨범을 반영한다.
+    /// Reflects albums that were deleted or renamed in the Photos app.
     private func refreshSlots() {
         guard !slotIDs.isEmpty else { return }
         var titles: [String: String] = [:]

@@ -1,8 +1,8 @@
 import Photos
 import Observation
 
-/// 삭제 대기열. 사진을 바로 지우지 않고 식별자만 모아 두며, 앱을 다시 열어도 유지된다.
-/// 실제 삭제는 시스템이 확인창을 띄우고, 확인하면 사진 앱의 "최근 삭제된 항목"으로 간다.
+/// Deletion queue. Photos are not deleted right away; only their identifiers are collected, and they persist across launches.
+/// The actual deletion shows a system confirmation; confirming moves the photos to "Recently Deleted" in the Photos app.
 @Observable
 final class DeletionQueue {
     private let key = "deletionQueue.ids"
@@ -25,12 +25,12 @@ final class DeletionQueue {
         save()
     }
 
-    /// 대기열에서 뺀다(복원). 사진은 그대로 남는다.
+    /// Removes from the queue (restore). The photos stay untouched.
     func remove(_ assets: [PHAsset]) {
         remove(ids: assets.map(\.localIdentifier))
     }
 
-    /// 보관함에 더는 없는 사진의 식별자를 정리한다.
+    /// Prunes identifiers of photos that are no longer in the library.
     func prune() {
         guard !ids.isEmpty else { return }
         var existing = Set<String>()
@@ -43,7 +43,7 @@ final class DeletionQueue {
         }
     }
 
-    /// 대기열 사진들. 넣은 순서대로.
+    /// The queued photos, in the order they were added.
     func assets() -> [PHAsset] {
         guard !ids.isEmpty else { return [] }
         var byID: [String: PHAsset] = [:]
@@ -52,8 +52,8 @@ final class DeletionQueue {
         return ids.compactMap { byID[$0] }
     }
 
-    /// 사진을 실제로 삭제한다. 시스템 확인창이 뜨고, 사용자가 취소하면 오류(`userCancelled`)가 난다.
-    /// 성공하면 대기열에서도 뺀다.
+    /// Actually deletes the photos. A system confirmation appears; if the user cancels it throws (`userCancelled`).
+    /// On success they are also removed from the queue.
     func delete(_ assets: [PHAsset]) async throws {
         guard !assets.isEmpty else { return }
         try await PHPhotoLibrary.shared().performChanges {
@@ -62,7 +62,7 @@ final class DeletionQueue {
         remove(ids: assets.map(\.localIdentifier))
     }
 
-    /// 사진 하나가 차지하는 용량(바이트). 문서화되지 않은 `fileSize` 키를 읽으므로 없으면 0으로 본다.
+    /// Size of one photo in bytes. Reads the undocumented `fileSize` key, so a missing value counts as 0.
     static func byteSize(of asset: PHAsset) -> Int64 {
         PHAssetResource.assetResources(for: asset).reduce(0) { total, resource in
             total + ((resource.value(forKey: "fileSize") as? NSNumber)?.int64Value ?? 0)

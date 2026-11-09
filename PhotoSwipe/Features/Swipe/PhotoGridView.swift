@@ -1,11 +1,11 @@
 import SwiftUI
 import Photos
 
-/// 메인 화면인 사진 그리드. 사진을 누르면(Mac은 방향키로 옮기고 Enter) 그 사진의 한 장 보기 창이 열린다.
-/// 오른쪽 위 "삭제 대기(N개)"로 대기열 화면을 연다. 대기열 사진은 이 목록에서 숨겨져 있다.
+/// Main screen: the photo grid. Tapping a photo (Mac: arrow keys then Enter) opens its one-photo window.
+/// "Delete Queue (N)" at the top right opens the queue screen. Queued photos are hidden from this list.
 struct PhotoGridView: View {
     let session: SwipeSession
-    /// 한 장 보기 창이 닫혀 있고 이 화면이 맨 앞일 때 true. 키 입력은 이때만 받는다.
+    /// True when the one-photo window is closed and this screen is frontmost. Key input is only handled then.
     let isActive: Bool
     let onOpen: (Int) -> Void
     @State private var selected: Int
@@ -51,7 +51,7 @@ struct PhotoGridView: View {
         }
         .onChange(of: showQueue) { if !showQueue { focused = isActive } }
         .onChange(of: session.items.count) { selected = clamped(selected) }
-        // 그리드에서 고른 칸도 마지막 위치로 저장해, 다시 열면 거기서 시작한다.
+        // Also save the cell chosen in the grid as the last position, so the app resumes there.
         .onChange(of: selected) {
             if isActive { session.go(to: selected) }
         }

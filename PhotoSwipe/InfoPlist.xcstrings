@@ -1,26 +1,54 @@
 {
-  "sourceLanguage": "en",
-  "version": "1.0",
-  "strings": {
-    "NSPhotoLibraryUsageDescription": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진을 정리하려면 사진 보관함 전체 접근이 필요합니다."
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "PhotoSwipe"
           }
         }
       }
     },
-    "NSPhotoLibraryAddUsageDescription": {
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진을 앨범에 추가하려면 권한이 필요합니다."
+    "NSPhotoLibraryAddUsageDescription" : {
+      "comment" : "Privacy - Photo Library Additions Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "PhotoSwipe needs permission to add photos to your albums."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "사진을 앨범에 추가하려면 권한이 필요합니다."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "comment" : "Privacy - Photo Library Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "PhotoSwipe needs full access to your photo library to help you sort photos."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "사진을 정리하려면 사진 보관함 전체 접근이 필요합니다."
           }
         }
       }
     }
-  }
+  },
+  "version" : "1.0"
 }

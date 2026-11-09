@@ -1,8 +1,8 @@
 import SwiftUI
 import Photos
 
-/// 이 사진이 이미 들어 있는 앨범 칩. 사진 왼쪽 위에 겹쳐 놓는다.
-/// 칩을 누르면 그 앨범에서 사진을 뺀다(화면은 그대로 두므로, 이어서 유지/삭제/다른 앨범을 고르면 된다).
+/// Chips for the albums this photo is already in, overlaid at the photo's top left.
+/// Tapping a chip removes the photo from that album. The card stays, so you can then keep, delete or pick another album.
 struct AlbumBadges: View {
     let asset: PHAsset
     let session: SwipeSession
@@ -16,7 +16,7 @@ struct AlbumBadges: View {
 
     private let maxShown = 3
 
-    /// 예전 사진의 앨범은 보여주지 않는다.
+    /// Never shows albums of a previous photo.
     private var albums: [Album] {
         guard let loaded, loaded.id == asset.localIdentifier else { return [] }
         return loaded.albums

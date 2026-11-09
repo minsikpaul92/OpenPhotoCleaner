@@ -1,11 +1,11 @@
 import SwiftUI
 import Photos
 
-/// 삭제 대기열 화면. 사진을 그리드로 보여주고, 전체삭제/전체복원을 한다.
-/// 사진을 고르면 선택삭제/선택복원으로 바뀐다. 삭제는 시스템 확인창이 한 번 뜬다.
-/// - iPhone: "선택"을 눌러 선택 모드로 들어가 사진을 누른다.
-/// - Mac: 사진을 클릭하거나 방향키로 점선 칸을 옮겨 Enter로 선택/해제한다(여러 장 가능).
-///   Delete = 선택삭제, Esc = 선택 해제(선택이 없으면 닫기).
+/// Deletion queue screen. Shows the photos as a grid with Delete All / Restore All.
+/// Selecting photos switches it to Delete Selected / Restore Selected. Deleting shows one system confirmation.
+/// - iPhone: tap "Select" to enter selection mode, then tap photos.
+/// - Mac: click a photo, or move the dashed cell with the arrow keys and press Enter, to toggle it (several allowed).
+///   Delete = delete selected, Esc = clear the selection (closes when nothing is selected).
 struct QueueSheet: View {
     let session: SwipeSession
     @Environment(\.dismiss) private var dismiss
@@ -18,7 +18,7 @@ struct QueueSheet: View {
 
     private let tileSize: CGFloat = 100
 
-    /// 선택 모드인가. Mac은 사진을 하나라도 고르면 자동으로 선택 모드다.
+    /// Whether selection mode is on. On Mac it turns on automatically as soon as one photo is selected.
     private var isSelecting: Bool {
         #if os(macOS)
         selecting || !selected.isEmpty
@@ -27,7 +27,7 @@ struct QueueSheet: View {
         #endif
     }
 
-    /// 삭제/복원 대상. 선택 모드면 고른 사진, 아니면 전부.
+    /// Target of delete/restore: the selected photos in selection mode, otherwise all.
     private var targets: [PHAsset] {
         isSelecting ? assets.filter { selected.contains($0.localIdentifier) } : assets
     }
@@ -181,7 +181,7 @@ struct QueueSheet: View {
         focusedID = assets[next].localIdentifier
     }
 
-    /// Esc: 선택이 있으면 모두 해제, 없으면 창을 닫는다.
+    /// Esc: clears the selection if there is one, otherwise closes the sheet.
     private func escape() {
         if !selected.isEmpty {
             selected = []
@@ -191,7 +191,7 @@ struct QueueSheet: View {
         }
     }
 
-    /// Delete 키: 선택한 사진만 삭제한다(선택이 없으면 아무 일도 하지 않는다. 전체삭제는 버튼으로만).
+    /// Delete key: deletes only the selected photos (does nothing with no selection; Delete All is button-only).
     private func deleteSelected() {
         let chosen = assets.filter { selected.contains($0.localIdentifier) }
         guard !chosen.isEmpty else { return }
@@ -216,7 +216,7 @@ struct QueueSheet: View {
         refresh()
     }
 
-    /// 목록과 총 용량을 다시 읽는다. 사라진 사진은 선택·점선에서 빼고, 비었으면 닫는다.
+    /// Reloads the list and total size. Drops vanished photos from the selection and focus, and closes when empty.
     private func refresh() {
         assets = session.queue.assets()
         totalBytes = assets.reduce(0) { $0 + DeletionQueue.byteSize(of: $1) }

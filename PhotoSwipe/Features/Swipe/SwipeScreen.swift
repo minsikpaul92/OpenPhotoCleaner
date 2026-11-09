@@ -1,12 +1,12 @@
 import SwiftUI
 import Photos
 
-/// 그리드 위에 띄우는 사진 한 장 보기 창.
-/// iPhone은 4방향 스와이프, Mac은 방향키 4방향으로 조작한다. 아래는 창을 닫고 그리드로 돌아간다.
-/// Mac 전용: 숫자키 = 번호 앨범에 바로 저장, ↑ 두 번 = 앨범 선택창, Esc = 그리드로.
+/// One-photo window shown above the grid.
+/// Controlled by four-way swipes on iPhone and the four arrow keys on Mac. Down closes the window and returns to the grid.
+/// Mac only: number key = save straight to the numbered album, ↑ twice = album picker, Esc = back to the grid.
 struct SwipeScreen: View {
     let session: SwipeSession
-    /// 튜토리얼이 위에 떠 있는 동안 true. 닫히면 키 입력을 다시 받는다.
+    /// True while the tutorial is shown on top. Key input resumes when it closes.
     let isBlocked: Bool
     let onClose: () -> Void
     @State private var drag: CGSize = .zero
@@ -18,7 +18,7 @@ struct SwipeScreen: View {
     @FocusState private var focused: Bool
 
     private let threshold: CGFloat = 100
-    /// ↑를 두 번 눌렀는지 가리려고 한 번 눌렀을 때 기다리는 시간.
+    /// How long a single ↑ waits to tell whether a second ↑ follows.
     private let doubleUpWindow: Duration = .milliseconds(300)
 
     var body: some View {
@@ -36,6 +36,7 @@ struct SwipeScreen: View {
         .background(.background)
         #endif
         .overlay(alignment: .top) { toastView }
+        .onReceive(NotificationCenter.default.publisher(for: .undoRequested)) { _ in performUndo() }
         .focusable()
         .focused($focused)
         .focusEffectDisabled()
@@ -67,11 +68,11 @@ struct SwipeScreen: View {
         GeometryReader { proxy in
             if let asset = session.current {
                 ZStack {
-                    // 사진 모양과 상관없이 영역 전체에서 스와이프를 받는다.
+                    // Receive swipes over the whole area, whatever the photo's shape.
                     Color.clear
                         .contentShape(Rectangle())
                         .gesture(dragGesture(size: proxy.size))
-                    // 사진은 터치를 통과시키고(아래 스와이프 영역이 받음), 앨범 칩만 눌린다.
+                    // The photo lets touches through (the swipe area below receives them); only the album chips are tappable.
                     LargeAssetImage(asset: asset)
                         .allowsHitTesting(false)
                         .overlay(alignment: .topLeading) {
@@ -105,7 +106,7 @@ struct SwipeScreen: View {
         }
     }
 
-    /// 대상 앨범 이름 칩. 누르면 다른 앨범을 고를 수 있다. 스와이프하는 동안에는 숨긴다.
+    /// Target album chip. Tap it to pick another album. Hidden while swiping.
     @ViewBuilder
     private var targetChip: some View {
         if let target = session.target {
@@ -126,7 +127,7 @@ struct SwipeScreen: View {
     }
 
     #if os(macOS)
-    /// 번호를 지정한 앨범 목록. 숫자키를 누르면 그 앨범에 바로 저장된다.
+    /// List of numbered albums. Pressing the number key saves straight to that album.
     private var favoritesLegend: some View {
         let entries = AlbumLibrary.slotKeys.compactMap { digit in
             session.albums.slotTitles[digit].map { (digit: digit, title: $0) }
@@ -172,7 +173,7 @@ struct SwipeScreen: View {
         }
     }
 
-    // 임시 이전 버튼. 6단계에서 되돌리기로 대체한다.
+    // Temporary previous button. To be replaced by undo.
     private var controls: some View {
         HStack {
             Button { session.previous() } label: { Image(systemName: "chevron.left") }
@@ -189,7 +190,7 @@ struct SwipeScreen: View {
     }
 
     private func dragGesture(size: CGSize) -> some Gesture {
-        // 움직이는 뷰 자신의 좌표로 재면 이동량이 겹쳐 커지므로 화면 좌표를 쓴다.
+        // Use global coordinates: measuring in the moving view's own space compounds the translation.
         DragGesture(coordinateSpace: .global)
             .onChanged { value in
                 guard !isAnimating else { return }
@@ -206,13 +207,13 @@ struct SwipeScreen: View {
             }
     }
 
-    /// 방향키용. 카드가 날아가는 거리를 알기 위해 대략적인 화면 크기를 쓴다.
+    /// For arrow keys. Uses a rough screen size to know how far the card flies off.
     private func perform(_ direction: SwipeDirection) {
         guard !isAnimating else { return }
         commit(direction, size: CGSize(width: 600, height: 800))
     }
 
-    /// ↑ 키. 대상 앨범이 없으면 바로 선택창. 있으면 잠깐 기다려서, 그 안에 한 번 더 누르면 선택창, 아니면 추가한다.
+    /// ↑ key. Without a target album, open the picker right away. With one, wait briefly: a second ↑ opens the picker, otherwise add to the target.
     private func handleUp() {
         guard !isAnimating else { return }
         if let waiting = pendingUp {
@@ -233,7 +234,7 @@ struct SwipeScreen: View {
         }
     }
 
-    /// 숫자키. 그 번호의 앨범에 현재 사진을 바로 추가하고 다음 사진으로 넘어간다.
+    /// Number key. Adds the current photo to that number's album right away and moves on.
     private func quickAdd(_ characters: String) {
         guard let digit = characters.first.map(String.init), session.current != nil else { return }
         switch session.toggleCurrent(toSlot: digit) {
@@ -243,9 +244,15 @@ struct SwipeScreen: View {
         }
     }
 
-    /// 지금 사진 앞뒤를 미리 읽어 둔다(진행 방향 20장, 반대쪽 10장).
+    /// Prefetches around the current photo (see PhotoLoader.ahead / behind).
     private func prefetch() {
         PhotoLoader.shared.prefetch(session.items, around: session.index)
+    }
+
+    /// Undo from ⌘Z (Mac menu) or a shake (iPhone). Ignored while a sheet or animation is up.
+    private func performUndo() {
+        guard albumPicker == nil, !isAnimating else { return }
+        Task { showToast(await session.undo() ?? String(localized: "Nothing to undo")) }
     }
 
     private func showToast(_ text: String) {
@@ -289,8 +296,8 @@ struct SwipeScreen: View {
         }
     }
 
-    /// 대기열에 사진이 있으면 시스템 삭제 확인창을 바로 띄운다. 삭제하면 닫고, "허용 안 함"이면 대기열에 유지한 채 닫는다.
-    /// 삭제에 실패했을 때만 창에 남는다. 대기열이 비어 있으면 바로 닫는다.
+    /// If the queue is not empty, show the system delete confirmation right away. Deleting closes; "Don't Allow" keeps the queue and closes.
+    /// Stays open only if deletion failed. Closes immediately when the queue is empty.
     private func requestClose() {
         guard !isClosing else { return }
         guard session.queue.count > 0 else {
@@ -304,4 +311,9 @@ struct SwipeScreen: View {
             if result != .failed { onClose() }
         }
     }
+}
+
+extension Notification.Name {
+    /// Posted by the Mac Undo menu command (⌘Z) and by a shake on iPhone; the card view performs the undo.
+    static let undoRequested = Notification.Name("undoRequested")
 }

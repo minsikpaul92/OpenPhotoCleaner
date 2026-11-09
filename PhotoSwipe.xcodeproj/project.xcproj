@@ -7,7 +7,6 @@
   "localizations": {
     "development": "en",
     "supported": [
-      "en",
       "ko",
     ],
   },

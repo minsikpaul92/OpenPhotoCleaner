@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// 스와이프(iPhone)와 방향키(Mac)가 공유하는 4방향.
+/// The four directions shared by swipes (iPhone) and arrow keys (Mac).
 enum SwipeDirection: CaseIterable {
     case left, right, up, down
 
-    /// 드래그 이동량에서 더 많이 움직인 쪽 방향. 움직이지 않았으면 nil.
+    /// Direction of the larger drag component; nil if there was no movement.
     init?(translation: CGSize) {
         guard translation != .zero else { return nil }
         if abs(translation.width) >= abs(translation.height) {
@@ -14,7 +14,7 @@ enum SwipeDirection: CaseIterable {
         }
     }
 
-    /// 위쪽은 대상 앨범이 있으면 "앨범에 추가", 없으면 "앨범 선택".
+    /// Up is "Add to <album>" with a target album, otherwise "Choose Album".
     func label(target: Album?) -> String {
         switch self {
         case .left: String(localized: "Delete")
@@ -51,7 +51,7 @@ enum SwipeDirection: CaseIterable {
         }
     }
 
-    /// 카드가 화면 밖으로 날아가 다음 사진으로 넘어가는 방향인가.
+    /// Whether the card flies off screen and the next photo follows.
     func advances(hasTarget: Bool) -> Bool {
         switch self {
         case .left, .right: true
@@ -70,7 +70,7 @@ enum SwipeDirection: CaseIterable {
     }
 }
 
-/// 드래그하는 동안 방향별로 가볍게 보여주는 힌트.
+/// Light per-direction hint shown while dragging.
 struct SwipeHintOverlay: View {
     let drag: CGSize
     let threshold: CGFloat

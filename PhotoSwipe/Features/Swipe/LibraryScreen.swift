@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// 메인은 사진 그리드이고, 사진 한 장 보기는 그리드 위에 띄운 창이다.
-/// 처음 열 때 보던 사진이 있으면 그 사진의 창이 열린 채로 시작한다(이어서 시작).
+/// The main screen is the photo grid; the one-photo view is a window above it.
+/// Resumes where the user left off: with the last photo's window open, or in the grid.
 struct LibraryScreen: View {
     @State private var session: SwipeSession
     @State private var showCard: Bool
@@ -10,7 +10,7 @@ struct LibraryScreen: View {
     init(library: PhotoLibrary) {
         let session = SwipeSession(library: library)
         _session = State(initialValue: session)
-        // 마지막에 한 장 보기가 열려 있었으면 거기서, 그리드에 있었으면 그리드에서 시작한다(처음 실행은 한 장 보기).
+        // Start in the one-photo view if it was open last time, otherwise in the grid (the first launch opens the one-photo view).
         let cardWasOpen = UserDefaults.standard.object(forKey: "ui.cardOpen") as? Bool ?? true
         _showCard = State(initialValue: cardWasOpen && session.current != nil)
     }

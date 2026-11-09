@@ -7,7 +7,7 @@ Native SwiftUI for iPhone (iOS 17+) and Mac (macOS 14+). It only uses Apple
 frameworks (PhotoKit) and has no third-party dependencies. Everything happens on
 your device, in your own Photos library; nothing is uploaded.
 
-> Status: early. The core flow works; undo and a test suite are not done yet.
+> Status: early. The core flow and multi-step undo work; a test suite is not done yet.
 
 ## How it works
 
@@ -25,6 +25,8 @@ your device, in your own Photos library; nothing is uploaded.
 - **Albums are real Photos albums.** Adding a photo to an album does not copy it,
   and a photo can be in several albums. Tap an album chip on the photo (or press
   its number key again on Mac) to take it out of that album.
+- **Undo:** `⌘Z` on Mac, shake the device on iPhone. It undoes keep, queue add and
+  album changes, most recent first.
 - **Resumes where you stopped**, in the card view or in the grid.
 - Mac extras: number keys `1`–`0` file the photo into the album you assigned to
   that number, `↑↑` opens the album picker, `Esc` goes back to the grid, and the

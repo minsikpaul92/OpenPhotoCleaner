@@ -1,20 +1,20 @@
 import SwiftUI
 
-/// 앨범 선택 시트가 열린 이유.
+/// Why the album picker sheet was opened.
 enum AlbumPickerMode: Identifiable {
-    /// 위로 올렸는데 대상 앨범이 없을 때. 고르면 현재 사진도 그 앨범에 추가한다.
+    /// Swiped up with no target album. Picking an album also adds the current photo to it.
     case addCurrent
-    /// 떠 있는 칩을 눌렀거나 ↑를 두 번 눌렀을 때. 대상 앨범만 바꾼다.
+    /// The floating chip was tapped or ↑ was pressed twice. Only changes the target album.
     case changeTarget
 
     var id: Self { self }
 }
 
-/// 앨범을 그리드로 보여주고 대상 앨범을 고른다. 마우스 없이 키보드로 쓸 수 있다.
-/// - 방향키: 칸 이동(점선 표시)  - Enter: 선택(이미 대상인 앨범이면 해제)
-/// - 숫자키 1~9, 0: 점선 칸의 앨범에 번호 지정(덮어쓰기, 같은 번호를 다시 누르면 해제)
-/// - +: 새 앨범  - Delete: 앨범 삭제(확인창)  - S: 최근 사용순/이름순 전환  - Esc: 닫기
-/// 최근 사용순이면 마지막에 쓴 앨범(새로 만든 앨범 포함)이 맨 앞 칸이다.
+/// Shows albums as a grid and picks the target album. Fully usable from the keyboard.
+/// - Arrow keys: move the dashed cell  - Enter: select (clears the target if it is already the target)
+/// - Number keys 1-9, 0: assign that number to the dashed album (overwrites; the same key again clears it)
+/// - +: new album  - Delete: delete album (confirmation)  - S: toggle recently-used / by-name  - Esc: close
+/// In recently-used order the last used album (including a new one) is the first cell.
 struct AlbumPickerSheet: View {
     let session: SwipeSession
     let mode: AlbumPickerMode
@@ -61,7 +61,7 @@ struct AlbumPickerSheet: View {
                 }
                 .onKeyPress(.delete) { requestDelete(); return .handled }
                 .onKeyPress(.deleteForward) { requestDelete(); return .handled }
-                // 키보드에 따라 Delete가 다른 문자로 올 수 있어 한 번 더 받는다.
+                // Some keyboards deliver Delete as a different character, so handle it once more.
                 .onKeyPress(phases: .down) { press in
                     guard press.characters == "\u{7F}" || press.characters == "\u{8}" else { return .ignored }
                     requestDelete()
@@ -101,7 +101,7 @@ struct AlbumPickerSheet: View {
                 }
             }
             #else
-            // Mac 시트에서는 위쪽 도구줄이 보이지 않아, 아래에 직접 그린 버튼 줄을 둔다.
+            // The toolbar is not visible in Mac sheets, so draw a bottom button bar ourselves.
             .safeAreaInset(edge: .bottom) { macBar }
             #endif
             .alert("New Album", isPresented: $showNewAlbum) {
@@ -134,7 +134,7 @@ struct AlbumPickerSheet: View {
     }
 
     #if os(macOS)
-    /// Mac용 아래쪽 버튼 줄. 키 안내와 정렬·앨범 삭제·새 앨범·닫기 버튼.
+    /// Bottom button bar for Mac: key legend plus sort, delete album, new album and close buttons.
     private var macBar: some View {
         VStack(spacing: 8) {
             Text("← → ↑ ↓ Move  ·  Enter Select  ·  1–0 Number  ·  + New Album  ·  ⌫ Delete  ·  S Sort  ·  Esc Close")
@@ -207,7 +207,7 @@ struct AlbumPickerSheet: View {
         }
     }
 
-    /// 목록을 다시 읽는다. `id`가 아직 있으면 거기에, 없으면 대상 앨범이나 첫 칸에 점선을 둔다.
+    /// Reloads the list. Puts the dashed cell on `id` if it still exists, otherwise on the target album or the first cell.
     private func reload(keeping id: String? = nil) {
         albums = session.albums.albums()
         if let id, albums.contains(where: { $0.id == id }) {
@@ -219,7 +219,7 @@ struct AlbumPickerSheet: View {
         }
     }
 
-    /// 정렬을 바꾸고, 점선 칸은 같은 앨범에 그대로 둔다.
+    /// Changes the sort order and keeps the dashed cell on the same album.
     private func toggleSort() {
         session.albums.toggleSort()
         reload(keeping: focusedID)
@@ -235,7 +235,7 @@ struct AlbumPickerSheet: View {
         focusedID = albums[next].id
     }
 
-    /// 선택한다. 이미 대상인 앨범을 다시 고르면 대상을 해제한다.
+    /// Selects. Choosing the album that is already the target clears the target.
     private func pick(_ album: Album) {
         dismiss()
         if mode == .changeTarget, session.target?.id == album.id {
@@ -267,7 +267,7 @@ struct AlbumPickerSheet: View {
         }
     }
 
-    /// 새 앨범을 만든다. 선택은 하지 않고 선택창도 닫지 않는다. 새 앨범 칸에 점선만 둔다.
+    /// Creates a new album. It does not select it or close the sheet; only the dashed cell moves to it.
     private func createAlbum() {
         let title = newAlbumTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         newAlbumTitle = ""

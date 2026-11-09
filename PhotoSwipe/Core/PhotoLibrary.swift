@@ -1,7 +1,7 @@
 import Photos
 import Observation
 
-/// 사진 보관함 접근 권한과 최신순 에셋 목록.
+/// Photo library authorization and the newest-first asset list.
 @Observable
 final class PhotoLibrary {
     private(set) var status: PHAuthorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)

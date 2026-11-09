@@ -1,22 +1,22 @@
 import Photos
 import Observation
 
-/// 사진 정리 상태. 삭제 대기열에 넣은 사진을 뺀 최신순 목록과 현재 위치를 들고 있고,
-/// 위치가 바뀔 때마다 저장한다.
+/// Sorting state. Holds the newest-first list without queued photos and the current position,
+/// and saves the position whenever it changes.
 @Observable
 final class SwipeSession {
     private let library: PhotoLibrary
     private let store = ProgressStore()
     let queue = DeletionQueue()
     let albums = AlbumLibrary()
-    /// 삭제 대기열에 넣은 사진을 뺀 최신순 목록. 그리드와 한 장 보기가 함께 쓴다.
+    /// Newest-first list without photos in the deletion queue. Shared by the grid and the one-photo view.
     private(set) var items: [PHAsset] = []
     private(set) var index = 0
-    /// 위로 올리면 바로 사진을 넣는 앨범.
+    /// Album that swiping up adds to right away.
     private(set) var target: Album?
-    /// 앨범 구성이 바뀔 때마다 오른다(사진의 앨범 칩 새로고침용).
+    /// Increments whenever album membership changes (refreshes the photo's album chips).
     private(set) var albumsVersion = 0
-    /// 화면에 알림으로 보여줄 마지막 오류.
+    /// Last error to show in an alert.
     var lastError: String?
 
     init(library: PhotoLibrary) {
@@ -28,24 +28,89 @@ final class SwipeSession {
     }
 
     var count: Int { items.count }
-    /// 모두 넘겼으면 nil.
+    /// Nil once everything has been reviewed.
     var current: PHAsset? { index < count ? items[index] : nil }
     var canGoBack: Bool { index > 0 }
 
-    /// 삭제 대기열에 추가하고(목록에서 숨김) 다음 사진으로.
+    /// Adds to the deletion queue (hidden from the list) and moves to the next photo.
     func trash() {
         guard let current else { return }
+        record(.trashed(current))
         queue.add(current)
         items.remove(at: index)
         saveProgress()
     }
 
-    /// 유지하고 다음 사진으로.
+    /// Keeps the photo and moves to the next one.
     func keep() {
+        guard let current else { return }
+        record(.kept(current))
         advance()
     }
 
-    /// 대기열에서 빼서 다시 목록에 보이게 한다. 보던 위치는 유지한다.
+    // MARK: Undo
+
+    private enum Undoable {
+        case kept(PHAsset)
+        case trashed(PHAsset)
+        case addedToAlbum(PHAsset, Album, wasMember: Bool)
+        case removedFromAlbum(PHAsset, Album)
+    }
+
+    private var undoStack: [Undoable] = []
+    private let maxUndo = 100
+    /// Album adds run in the background; undo waits for them so it never races an add.
+    private var pendingAdd: Task<Void, Never>?
+
+    private func record(_ action: Undoable) {
+        undoStack.append(action)
+        if undoStack.count > maxUndo { undoStack.removeFirst() }
+    }
+
+    /// Undoes the most recent action and returns a short message for a toast, or nil if there is nothing to undo.
+    /// Deleting from the library is a system action and cannot be undone here; undoing a queue add of a deleted photo is skipped.
+    func undo() async -> String? {
+        await pendingAdd?.value
+        while let action = undoStack.popLast() {
+            switch action {
+            case .kept(let asset):
+                guard show(asset) else { continue }
+                return String(localized: "Undid keep")
+            case .trashed(let asset):
+                guard queue.contains(asset) else { continue }
+                queue.remove([asset])
+                items = buildItems()
+                show(asset)
+                return String(localized: "Restored from the delete queue")
+            case .addedToAlbum(let asset, let album, let wasMember):
+                show(asset)
+                if wasMember { return String(localized: "Undid add") }
+                do {
+                    try await albums.remove(asset, from: try await albums.resolve(album))
+                    albumsVersion += 1
+                } catch {
+                    lastError = String(localized: "Couldn't remove from \(album.title). \(error.localizedDescription)")
+                }
+                return String(localized: "Removed from \(album.title)")
+            case .removedFromAlbum(let asset, let album):
+                show(asset)
+                await add(asset, to: album)
+                return String(localized: "Added back to \(album.title)")
+            }
+        }
+        return nil
+    }
+
+    /// Moves to `asset` if it is in the list. Returns false when it is gone (e.g. deleted).
+    @discardableResult
+    private func show(_ asset: PHAsset) -> Bool {
+        guard let newIndex = items.firstIndex(where: { $0.localIdentifier == asset.localIdentifier }) else { return false }
+        index = newIndex
+        saveProgress()
+        return true
+    }
+
+    /// Takes photos out of the queue so they show in the list again. The current position is kept.
     func restore(_ assets: [PHAsset]) {
         guard !assets.isEmpty else { return }
         let currentID = current?.localIdentifier
@@ -60,12 +125,12 @@ final class SwipeSession {
 
     enum DeleteResult {
         case deleted
-        /// 시스템 확인창에서 허용하지 않음. 대기열은 그대로다.
+        /// Not allowed in the system confirmation. The queue is unchanged.
         case cancelled
         case failed
     }
 
-    /// 대기열 사진을 삭제한다. 시스템 확인창이 뜬다.
+    /// Deletes queued photos. A system confirmation appears.
     @discardableResult
     func deleteQueued(_ assets: [PHAsset]) async -> DeleteResult {
         do {
@@ -83,11 +148,16 @@ final class SwipeSession {
         await deleteQueued(queue.assets())
     }
 
-    /// 현재 사진을 앨범에 추가하고 곧바로 다음 사진으로 넘어간다. 추가는 뒤에서 진행한다.
+    /// Adds the current photo to the album and moves on right away. The add runs in the background.
     func addCurrent(to album: Album) {
         guard let asset = current else { return }
+        record(.addedToAlbum(asset, album, wasMember: albums.albums(containing: asset).contains(album)))
         advance()
-        Task { await add(asset, to: album) }
+        let previous = pendingAdd
+        pendingAdd = Task {
+            await previous?.value
+            await add(asset, to: album)
+        }
     }
 
     enum SlotResult {
@@ -96,8 +166,8 @@ final class SwipeSession {
         case none
     }
 
-    /// 번호 앨범에 현재 사진이 없으면 넣고 다음 사진으로 넘어간다.
-    /// 이미 들어 있으면 앨범에서 빼고 그 사진 화면에 머문다(잘못 넣은 것을 바로잡을 때).
+    /// If the current photo is not in the numbered album, adds it and moves on.
+    /// If it is already in the album, removes it and stays on that photo (to correct a mistake).
     func toggleCurrent(toSlot digit: String) -> SlotResult {
         guard let asset = current, let album = albums.album(forSlot: digit) else { return .none }
         if albums.albums(containing: asset).contains(album) {
@@ -108,8 +178,9 @@ final class SwipeSession {
         return .added(album)
     }
 
-    /// 앨범에서 사진을 뺀다. 화면은 그대로 둔다.
+    /// Removes the photo from the album. The screen stays as it is.
     func remove(_ asset: PHAsset, from album: Album) {
+        record(.removedFromAlbum(asset, album))
         Task {
             do {
                 try await albums.remove(asset, from: album)
@@ -120,13 +191,13 @@ final class SwipeSession {
         }
     }
 
-    /// 대상 앨범을 해제한다(비운다).
+    /// Clears the target album.
     func clearTarget() {
         target = nil
         albums.targetID = nil
     }
 
-    /// 앨범을 삭제한다. 사진은 남는다. 대상 앨범이었으면 해제된다.
+    /// Deletes the album; its photos stay. Clears the target if it was the target.
     func deleteAlbum(_ album: Album) async {
         do {
             try await albums.deleteAlbum(album)
@@ -136,7 +207,7 @@ final class SwipeSession {
         }
     }
 
-    /// 대상 앨범으로 고정한다. 아직 없는 "공유 대기"는 이때 만든다. `addCurrent`면 현재 사진도 추가한다.
+    /// Sets the target album. A "Pending Share" that does not exist yet is created here. With `addCurrent` the current photo is added too.
     func select(_ album: Album, addCurrent: Bool) async {
         do {
             let resolved = try await albums.resolve(album)
@@ -149,8 +220,8 @@ final class SwipeSession {
         }
     }
 
-    /// 새 앨범을 만들기만 한다. 대상 앨범으로 고르거나 사진을 넣지는 않는다.
-    /// 만든 앨범은 최근 사용순에서 맨 앞에 오도록 사용한 것으로 기록한다.
+    /// Only creates the album. It is not chosen as target and no photo is added.
+    /// The new album is recorded as used so it comes first in recently-used order.
     @discardableResult
     func createAlbum(title: String) async -> Album? {
         do {
@@ -163,14 +234,14 @@ final class SwipeSession {
         }
     }
 
-    /// 그리드에서 고른 사진으로 이동한다.
+    /// Moves to the photo chosen in the grid.
     func go(to newIndex: Int) {
         guard newIndex >= 0, newIndex < count else { return }
         index = newIndex
         saveProgress()
     }
 
-    // 임시 이전 버튼용. 6단계에서 되돌리기로 대체한다.
+    /// Plain back navigation (not undo).
     func previous() {
         guard index > 0 else { return }
         index -= 1
