@@ -306,7 +306,8 @@ struct SwipeScreen: View {
         }
     }
 
-    /// Applies the move now and lets a copy of the old photo drift 30% of the way out and fade, over the new photo.
+    /// Applies the move now and lets a copy of the old photo drift out and fade over the new photo
+    /// (30% of the width sideways, 70% of the height up).
     /// Without a prefetched copy of the old photo it simply switches.
     private func flyAway(_ direction: SwipeDirection, size: CGSize) {
         if let asset = session.current, let image = PhotoLoader.shared.cachedImage(for: asset) {
@@ -314,7 +315,7 @@ struct SwipeScreen: View {
             switch direction {
             case .left: end = CGSize(width: -size.width * 0.3, height: 0)
             case .right: end = CGSize(width: size.width * 0.3, height: 0)
-            default: end = CGSize(width: 0, height: -size.height * 0.3)
+            default: end = CGSize(width: 0, height: -size.height * 0.7)
             }
             leaving = LeavingCard(image: image, end: end)
         }
