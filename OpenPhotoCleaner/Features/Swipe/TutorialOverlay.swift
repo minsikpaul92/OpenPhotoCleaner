@@ -14,8 +14,13 @@ struct TutorialOverlay: View {
             VStack(alignment: .leading, spacing: 14) {
                 Text("How to Sort Photos")
                     .font(.title2.bold())
-                if page == 0 { firstPage } else { secondPage }
-                Button(page == 0 ? "Next" : "Get Started", action: next)
+                switch page {
+                case 0: firstPage
+                case 1 where Platform.desktopStyle: cardKeysPage
+                case 2 where Platform.desktopStyle: pickerKeysPage
+                default: lastPage
+                }
+                Button(page == lastIndex ? "Get Started" : "Next", action: next)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
                     .frame(maxWidth: .infinity, alignment: .trailing)
@@ -37,8 +42,11 @@ struct TutorialOverlay: View {
         }
     }
 
+    /// Mac and iPad have two extra pages for the keyboard.
+    private var lastIndex: Int { Platform.desktopStyle ? 3 : 1 }
+
     private func next() {
-        if page == 0 { page = 1 } else { onDismiss() }
+        if page >= lastIndex { onDismiss() } else { page += 1 }
     }
 
     @ViewBuilder private var firstPage: some View {
@@ -46,18 +54,12 @@ struct TutorialOverlay: View {
         row(.right, "Keep", "Leave it as is and go to the next photo")
         row(.up, "Save to Album", "Saves to the chosen album right away (asks for one if none is chosen)")
         row(.down, "Show Grid", "Return to the photo grid")
+        #if os(iOS)
         if Platform.desktopStyle {
             Divider()
-            extra("1 ~ 0", "Save to the album with that number")
-            extra("⌫ / ↩", "Delete / Keep, same as ← / →")
-            extra("A", "Open the album picker")
-            extra("R", "Rotate 90°")
-            extra("Esc", "Back to the grid")
-            extra("⌘ Z", "Undo the last action")
-            #if os(iOS)
             extra("↔", "By touch: swipe right to Delete, left to Keep")
-            #endif
         }
+        #endif
         #if os(iOS)
         if UIDevice.current.userInterfaceIdiom != .pad {
             Divider()
@@ -66,7 +68,36 @@ struct TutorialOverlay: View {
         #endif
     }
 
-    @ViewBuilder private var secondPage: some View {
+    @ViewBuilder private var cardKeysPage: some View {
+        Text("Keys on the photo").font(.headline)
+        extra("← / ⌫", "Delete")
+        extra("→ / ↩", "Keep")
+        extra("↑", "Save to the chosen album")
+        extra("↓ / Esc", "Back to the grid")
+        extra("1 ~ 0", "Save to the album with that number (again to take it out)")
+        extra("A", "Open the album picker")
+        extra("Space", "Favorite")
+        extra("R", "Rotate 90°")
+        extra("⌘ Z", "Undo the last action")
+    }
+
+    @ViewBuilder private var pickerKeysPage: some View {
+        Text("Keys in the album picker").font(.headline)
+        extra("← → ↑ ↓", "Move the dashed frame")
+        extra("↩", "Choose the album")
+        extra("+", "Add a new album")
+        extra("⌫", "Delete the album")
+        extra("S", "Sort by recent or by name")
+        extra("1 ~ 0", "Give the album that number")
+        extra("Esc", "Close")
+        Divider()
+        Text("Keys in the grid and delete queue").font(.headline)
+        extra("← → ↑ ↓", "Move, then ↩ to open (grid) or select (queue)")
+        extra("⌫", "Delete the selected photos (queue)")
+        extra("Esc", "Clear the selection, or close (queue)")
+    }
+
+    @ViewBuilder private var lastPage: some View {
         row(.down, "Show Grid", "If photos are waiting in the delete queue, you can delete them all at once or leave them in the queue to decide later")
         HStack(spacing: 12) {
             Image(systemName: "folder")
@@ -98,7 +129,7 @@ struct TutorialOverlay: View {
         HStack(spacing: 12) {
             Text(keys)
                 .font(.callout.weight(.semibold).monospaced())
-                .frame(width: 56, alignment: .leading)
+                .frame(width: 72, alignment: .leading)
             Text(detail).font(.subheadline).foregroundStyle(.secondary)
         }
     }

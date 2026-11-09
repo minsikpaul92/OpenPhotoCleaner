@@ -33,7 +33,6 @@ struct SwipeScreen: View {
         .environment(\.colorScheme, Platform.desktopStyle ? .dark : colorScheme)
         .background(Platform.desktopStyle ? Color.black : Color.platformBackground)
         .overlay { toastView }
-        #if os(iOS)
         // The guide describes this screen, so its button lives here (Mac and iPad also have Help > How to Sort Photos).
         .overlay(alignment: .topTrailing) {
             Button {
@@ -46,7 +45,6 @@ struct SwipeScreen: View {
             .accessibilityLabel("How to Sort Photos")
             .opacity(drag == .zero ? 1 : 0)
         }
-        #endif
         .onReceive(NotificationCenter.default.publisher(for: .undoRequested)) { _ in performUndo() }
         .focusable()
         .focused($focused)
